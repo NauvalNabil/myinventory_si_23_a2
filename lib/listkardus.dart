@@ -40,7 +40,7 @@ class _ListkardusState extends State<Listkardus> {
     return Scaffold(
       backgroundColor: const Color(0xFF16002F),
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 235, 114, 54),
+        backgroundColor: const Color.fromARGB(255, 125, 125, 174),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
