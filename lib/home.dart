@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:myinventory_si_23_a2/buatkardus.dart';
 import 'package:myinventory_si_23_a2/listkardus.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:myinventory_si_23_a2/isikardus.dart';
 
 class Kardus {
   final String kategori;
@@ -14,7 +15,7 @@ class Kardus {
     required this.deskripsi,
     required this.lokasi,
     this.gambar,
-    });
+  });
 }
 
 class HomeScreen extends StatefulWidget {
@@ -26,61 +27,52 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   List<Kardus> daftarKardus = [];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF16002F),
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 125, 125, 174),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(
-            bottom: Radius.circular(10)
-          )
+        backgroundColor: const Color.fromARGB(255, 125, 125, 174),
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(bottom: Radius.circular(10)),
         ),
         title: Row(
           children: [
             Container(
-            width: 45,
-            height: 45,
-              decoration: BoxDecoration(
-                color: const Color.fromARGB(255, 235, 114, 54),
-                shape: BoxShape.circle
+              width: 45,
+              height: 45,
+              decoration: const BoxDecoration(
+                color: Color.fromARGB(255, 235, 114, 54),
+                shape: BoxShape.circle,
               ),
-                child: Icon(Icons.person,
-                  color: Colors.white,
-                  size: 30,
-                ),
+              child: const Icon(Icons.person, color: Colors.white, size: 30),
             ),
-           
-           SizedBox(width: 10,),
-           Text ("Selamat datang, Username", 
-              style: TextStyle (
-                color: Colors.white,
-                fontSize: 18,
-
-              ),
+            const SizedBox(width: 10),
+            const Text(
+              "Selamat datang, Username",
+              style: TextStyle(color: Colors.white, fontSize: 18),
             ),
           ],
         ),
       ),
-
       body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 22, vertical: 16,),
-        child: Column(          
-          children: [ 
+        padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 16),
+        child: Column(
+          children: [
             Row(
               children: [
                 GestureDetector(
                   onTap: () async {
                     final hasil = await Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context)=>Buatkardus()),
+                      context,
+                      MaterialPageRoute(builder: (context) => Buatkardus()),
                     );
 
                     if (hasil != null && hasil is Kardus) {
-                    setState(() {
-                    daftarKardus.add(hasil);
-                    });
+                      setState(() {
+                        daftarKardus.add(hasil);
+                      });
                     }
                   },
                   child: Container(
@@ -90,17 +82,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       color: const Color.fromARGB(255, 235, 114, 54),
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.add, color: Colors.white,size: 40,),                 
-                      ],
+                    child: const Center(
+                      child: Icon(Icons.add, color: Colors.white, size: 40),
                     ),
                   ),
                 ),
-              
-                SizedBox(width: 16),
-                
+                const SizedBox(width: 16),
                 GestureDetector(
                   onTap: () async {
                     final hasilList = await Navigator.push(
@@ -117,90 +104,90 @@ class _HomeScreenState extends State<HomeScreen> {
                     }
                   },
                   child: Container(
-                  height: 50,
-                  width: 150,
+                    height: 50,
+                    width: 150,
                     decoration: BoxDecoration(
                       color: const Color.fromARGB(255, 235, 114, 54),
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.format_list_bulleted, color: Colors.white,size: 35,),
-                      ],
+                    child: const Center(
+                      child: Icon(Icons.format_list_bulleted, color: Colors.white, size: 35),
                     ),
                   ),
                 ),
-
-              ],              
+              ],
             ),
-                       
-            
-
-            
-            
-            SizedBox(height: 20),
+            const SizedBox(height: 8),
             Expanded(
               child: ListView.builder(
                 itemCount: daftarKardus.length,
-                itemBuilder: (context, index){
+                itemBuilder: (context, index) {
                   final kardus = daftarKardus[index];
                   return Padding(
                     padding: const EdgeInsets.symmetric(vertical: 1),
                     child: Container(
-                      padding: EdgeInsets.symmetric(vertical: 8),
+                      padding: const EdgeInsets.symmetric(vertical: 8),
                       child: Container(
-                        padding: EdgeInsets.all(8),
+                        padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Row(
                           children: [
-                            Container(
-                              width: 60,
-                              height: 60,
-                              margin: EdgeInsets.only(right: 12),
-                              decoration: BoxDecoration(
-                                color: Color.fromARGB(255, 125, 125, 174),
-                                borderRadius: BorderRadius.circular(8),
+                            
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => Isikardus(kardus: kardus),
+                                  ),
+                                );
+                              },
+                              child: Container(
+                                width: 60,
+                                height: 60,
+                                margin: const EdgeInsets.only(right: 12),
+                                decoration: BoxDecoration(
+                                  color: const Color.fromARGB(255, 125, 125, 174),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: const Icon(Icons.folder_copy, size: 40, color: Colors.white),
                               ),
-                              child: Icon(Icons.folder_copy, size: 40, color: Colors.white,),
                             ),
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(kardus.kategori.toUpperCase(),
-                                    style: TextStyle(fontWeight: FontWeight.bold)),
-                                  SizedBox(height: 4),
-                                  Text(kardus.deskripsi, style: TextStyle(fontSize: 12),),
-                                  SizedBox(height: 4),
-                                  Text(kardus.lokasi.toUpperCase(),
-                                    style: TextStyle(fontWeight: FontWeight.bold)),
+                                  Text(
+                                    kardus.kategori.toUpperCase(),
+                                    style: const TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    kardus.deskripsi,
+                                    style: const TextStyle(fontSize: 12),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    kardus.lokasi.toUpperCase(),
+                                    style: const TextStyle(fontWeight: FontWeight.bold),
+                                  ),
                                 ],
-                              )
+                              ),
                             ),
                           ],
                         ),
                       ),
                     ),
-                    
                   );
                 },
-              )
-            )
-            
-            
+              ),
+            ),
           ],
         ),
       ),
- 
-      
-      
-      
-
     );
   }
 }
-
