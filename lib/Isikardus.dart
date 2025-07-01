@@ -72,7 +72,7 @@ class _IsikardusState extends State<Isikardus> {
               ),
             ),
 
-            const SizedBox(height: 10),
+            const SizedBox(height: 16),
 
             
             GestureDetector(
