@@ -25,7 +25,7 @@ class _BuatkardusState extends State<Buatkardus> {
       appBar: AppBar(
         iconTheme: IconThemeData(color: Colors.white),
         title: Text(style: TextStyle(color: Colors.white),"Buat Kardus"),
-        backgroundColor: Color.fromARGB(255, 125, 125, 174),
+        backgroundColor: Color.fromARGB(255, 235, 114, 54),
       ),
 
       body: SingleChildScrollView(
@@ -56,7 +56,12 @@ class _BuatkardusState extends State<Buatkardus> {
                     deskripsiController.text.isEmpty ||
                     lokasiController.text.isEmpty) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text("Semua kolom harus di isi !"))
+                        SnackBar(
+                          content: Text("Semua kolom harus di isi !"),
+                          backgroundColor: Colors.red, 
+                          behavior: SnackBarBehavior.floating,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                        ),
                       );
                       return;  
                     }

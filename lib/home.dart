@@ -3,18 +3,21 @@ import 'package:myinventory_si_23_a2/buatkardus.dart';
 import 'package:myinventory_si_23_a2/listkardus.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:myinventory_si_23_a2/isikardus.dart';
+import 'package:myinventory_si_23_a2/kartuisi.dart';
 
 class Kardus {
-  final String kategori;
-  final String deskripsi;
-  final String lokasi;
+  String kategori;
+  String deskripsi;
+  String lokasi;
   XFile? gambar;
+  List<Item> isiItem;
 
   Kardus({
     required this.kategori,
     required this.deskripsi,
     required this.lokasi,
     this.gambar,
+    this.isiItem = const [],
   });
 }
 
@@ -68,7 +71,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       context,
                       MaterialPageRoute(builder: (context) => Buatkardus()),
                     );
-
                     if (hasil != null && hasil is Kardus) {
                       setState(() {
                         daftarKardus.add(hasil);
@@ -96,7 +98,6 @@ class _HomeScreenState extends State<HomeScreen> {
                         builder: (context) => Listkardus(kardus: daftarKardus),
                       ),
                     );
-
                     if (hasilList != null && hasilList is List<Kardus>) {
                       setState(() {
                         daftarKardus = hasilList;
@@ -135,15 +136,19 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         child: Row(
                           children: [
-                            
                             GestureDetector(
-                              onTap: () {
-                                Navigator.push(
+                              onTap: () async {
+                                final hasil = await Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => Isikardus(kardus: kardus),
                                   ),
                                 );
+                                if (hasil != null && hasil is Kardus) {
+                                  setState(() {
+                                    daftarKardus[index] = hasil;
+                                  });
+                                }
                               },
                               child: Container(
                                 width: 60,

@@ -40,7 +40,7 @@ class _ListkardusState extends State<Listkardus> {
     return Scaffold(
       backgroundColor: const Color(0xFF16002F),
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 125, 125, 174),
+        backgroundColor: const Color.fromARGB(255, 235, 114, 54),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
@@ -71,7 +71,7 @@ class _ListkardusState extends State<Listkardus> {
                         onTap: () => pilihGambar(index),
                         child: Container(
                           width: double.infinity,
-                          height: 120,
+                          height: 150,
                           decoration: BoxDecoration(
                             color: Colors.grey[300],
                             borderRadius: BorderRadius.circular(10),
@@ -132,7 +132,7 @@ class _ListkardusState extends State<Listkardus> {
                                 },
                               ),
                             ),
-                            // Tombol hapus
+                            
                             Container(
                               width: 36,
                               height: 36,
