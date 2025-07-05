@@ -1,19 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:myinventory_si_23_a2/kartuisi.dart'; 
+import 'package:myinventory_si_23_a2/kartuisi.dart';
 
-class TambahItem extends StatefulWidget {
-  const TambahItem({super.key});
+class EditItem extends StatefulWidget {
+  final Item item;
+
+  const EditItem({super.key, required this.item});
 
   @override
-  State<TambahItem> createState() => _TambahItemState();
+  State<EditItem> createState() => _EditItemState();
 }
 
-class _TambahItemState extends State<TambahItem> {
-  final TextEditingController namaController = TextEditingController();
-  final TextEditingController jumlahController = TextEditingController();
-  final TextEditingController kondisiController = TextEditingController();
-  final TextEditingController tanggalController = TextEditingController();
-  final TextEditingController deskripsiController = TextEditingController();
+class _EditItemState extends State<EditItem> {
+  late TextEditingController namaController;
+  late TextEditingController jumlahController;
+  late TextEditingController kondisiController;
+  late TextEditingController tanggalController;
+  late TextEditingController deskripsiController;
+
+  @override
+  void initState() {
+    super.initState();
+    namaController = TextEditingController(text: widget.item.nama);
+    jumlahController = TextEditingController(text: widget.item.jumlah.toString());
+    kondisiController = TextEditingController(text: widget.item.kondisi);
+    tanggalController = TextEditingController(text: widget.item.tanggalBeli);
+    deskripsiController = TextEditingController(text: widget.item.deskripsi);
+  }
 
   @override
   void dispose() {
@@ -43,7 +55,7 @@ class _TambahItemState extends State<TambahItem> {
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 235, 114, 54),
         leading: const BackButton(color: Colors.white),
-        title: const Text("Tambah Item", style: TextStyle(color: Colors.white)),
+        title: const Text("Edit Item", style: TextStyle(color: Colors.white)),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -81,6 +93,7 @@ class _TambahItemState extends State<TambahItem> {
                       kondisi: kondisiController.text,
                       tanggalBeli: tanggalController.text,
                       deskripsi: deskripsiController.text,
+                      gambar: widget.item.gambar, // tetap pakai gambar lama
                     );
 
                     Navigator.pop(context, item);
@@ -92,7 +105,7 @@ class _TambahItemState extends State<TambahItem> {
                     elevation: 2,
                   ),
                   child: const Text(
-                    "TAMBAH",
+                    "SIMPAN",
                     style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,

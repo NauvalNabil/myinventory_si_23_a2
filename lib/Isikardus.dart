@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:myinventory_si_23_a2/edititem.dart';
 import 'package:myinventory_si_23_a2/home.dart';
 import 'package:myinventory_si_23_a2/kartuisi.dart';
 import 'package:myinventory_si_23_a2/tambahitem.dart';
@@ -19,7 +20,7 @@ class _IsikardusState extends State<Isikardus> {
   @override
   void initState() {
     super.initState();
-    daftarItem = List<Item>.from(widget.kardus.isiItem); 
+    daftarItem = List<Item>.from(widget.kardus.isiItem);
   }
 
   void tambahItemBaru(Item item) {
@@ -29,11 +30,31 @@ class _IsikardusState extends State<Isikardus> {
     });
   }
 
-  void hapusItem(int index) {
-    setState(() {
-      daftarItem.removeAt(index);
-      widget.kardus.isiItem = daftarItem;
-    });
+  Future<void> hapusItem(int index) async {
+    final konfirmasi = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Peringatan !"),
+        content: const Text("Yakin ingin menghapus item ini?"),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text("Tidak"),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text("Ya"),
+          ),
+        ],
+      ),
+    );
+
+    if (konfirmasi == true) {
+      setState(() {
+        daftarItem.removeAt(index);
+        widget.kardus.isiItem = daftarItem;
+      });
+    }
   }
 
   Future<void> pilihGambarUntukItem(int index) async {
@@ -66,7 +87,6 @@ class _IsikardusState extends State<Isikardus> {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            // Kartu info kardus
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
@@ -101,8 +121,6 @@ class _IsikardusState extends State<Isikardus> {
               ),
             ),
             const SizedBox(height: 16),
-
-            // Tombol tambah item
             GestureDetector(
               onTap: () async {
                 final hasil = await Navigator.push(
@@ -127,8 +145,6 @@ class _IsikardusState extends State<Isikardus> {
               ),
             ),
             const SizedBox(height: 10),
-
-            // Daftar item
             Expanded(
               child: ListView.builder(
                 itemCount: daftarItem.length,
@@ -178,8 +194,20 @@ class _IsikardusState extends State<Isikardus> {
                                 right: 4,
                                 child: Row(
                                   children: [
-                                    // Edit dan Hapus
-                                    buildCircleButton(Icons.edit, () {}),
+                                    buildCircleButton(Icons.edit, () async {
+                                      final hasilEdit = await Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => EditItem(item: daftarItem[index]),
+                                        ),
+                                      );
+                                      if (hasilEdit != null && hasilEdit is Item) {
+                                        setState(() {
+                                          daftarItem[index] = hasilEdit;
+                                          widget.kardus.isiItem = daftarItem;
+                                        });
+                                      }
+                                    }),
                                     const SizedBox(width: 8),
                                     buildCircleButton(Icons.delete, () => hapusItem(index)),
                                   ],
