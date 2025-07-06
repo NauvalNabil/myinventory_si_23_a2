@@ -17,7 +17,7 @@ class Daftar extends StatelessWidget {
           child: SingleChildScrollView(
             child: Column(
               children: [
-                // Input User Name
+                
                 TextField(
                   controller: usernameController,
                   style: const TextStyle(color: Colors.white),
@@ -37,7 +37,7 @@ class Daftar extends StatelessWidget {
                 ),
                 const SizedBox(height: 20),
 
-                // Input Email
+               
                 TextField(
                   controller: emailController,
                   style: const TextStyle(color: Colors.white),
@@ -57,7 +57,7 @@ class Daftar extends StatelessWidget {
                 ),
                 const SizedBox(height: 20),
 
-                // Input Password
+               
                 TextField(
                   controller: passwordController,
                   obscureText: true,
@@ -78,7 +78,7 @@ class Daftar extends StatelessWidget {
                 ),
                 const SizedBox(height: 30),
 
-                // Tombol DAFTAR
+               
                 SizedBox(
                   width: double.infinity,
                   height: 48,

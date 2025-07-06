@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'daftar.dart'; // Impor file daftar.dart yang sudah dibuat
+import 'daftar.dart';
 
 void main() {
   runApp(const MyApp());
@@ -13,11 +13,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Aplikasi Pendaftaran',
       theme: ThemeData(
-        // Anda bisa definisikan tema umum di sini jika perlu
-        brightness: Brightness.dark, // Set tema menjadi gelap
+        
+        brightness: Brightness.dark, 
       ),
-      home: const Daftar(), // Atur DaftarScreen sebagai halaman utama
-      debugShowCheckedModeBanner: false, // Menghilangkan banner debug
+      home: const Daftar(), 
+      debugShowCheckedModeBanner: false, 
     );
   }
 }
