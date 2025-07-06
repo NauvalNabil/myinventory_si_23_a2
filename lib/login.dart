@@ -1,21 +1,5 @@
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: LoginPage(),
-    );
-  }
-}
-
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -30,33 +14,50 @@ class _LoginPageState extends State<LoginPage> {
   void login() {
     final email = emailController.text.trim();
     final password = passwordController.text;
-
+    
     if (email.isEmpty || password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Email dan password harus diisi')),
       );
     } else {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Login berhasil sebagai $email')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Login berhasil sebagai $email')),
+      );
     }
+  }
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF00042D),
+      backgroundColor: const Color.fromRGBO(0, 6, 47, 1.0),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 30),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Logo DIHAPUS DI SINI
-            // const SizedBox(height: 50), // Optional spacing
-
-            // Email input
+            
+            Container(
+              width: 250,
+              height: 250,
+              margin: const EdgeInsets.only(bottom: 40),
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('assets/images/Myinventory_Logo.png'),
+                  fit: BoxFit.contain,
+                ),
+              ),
+            ),
+            
             TextField(
               controller: emailController,
+              keyboardType: TextInputType.emailAddress,
               style: const TextStyle(color: Colors.white),
               decoration: const InputDecoration(
                 labelText: 'Email',
@@ -70,8 +71,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
             const SizedBox(height: 20),
-
-            // Password input
+            
             TextField(
               controller: passwordController,
               obscureText: true,
@@ -88,8 +88,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
             const SizedBox(height: 40),
-
-            // Login Button
+            
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
@@ -103,9 +102,37 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 child: const Text(
                   'LOGIN',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
+            ),
+            const SizedBox(height: 20),
+           
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text(
+                  'Belum punya akun? ',
+                  style: TextStyle(color: Colors.white70),
+                ),
+                TextButton(
+                  onPressed: () {
+                   
+                    print('Navigasi ke halaman daftar');
+                  },
+                  child: const Text(
+                    'Daftar sekarang',
+                    style: TextStyle(
+                      color: Colors.deepOrange,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ],
         ),
