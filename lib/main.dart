@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:myinventory_si_23_a2/login.dart';
+import 'splash_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -11,12 +11,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
+      title: 'MyInventory',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        primarySwatch: Colors.deepOrange,
       ),
-      home: const LoginPage(),
+      home: const SplashScreen(), 
+      debugShowCheckedModeBanner: false,
     );
   }
 }
