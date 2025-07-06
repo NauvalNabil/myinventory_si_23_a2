@@ -98,7 +98,7 @@ class _ListkardusState extends State<Listkardus> {
                         right: 4,
                         child: Row(
                           children: [
-                            
+                            // Tombol Edit
                             Container(
                               width: 36,
                               height: 36,
@@ -132,7 +132,7 @@ class _ListkardusState extends State<Listkardus> {
                                 },
                               ),
                             ),
-                            
+                            // Tombol Hapus
                             Container(
                               width: 36,
                               height: 36,
@@ -152,23 +152,27 @@ class _ListkardusState extends State<Listkardus> {
                                 icon: const Icon(Icons.delete, size: 18, color: Colors.black),
                                 onPressed: () async {
                                   final konfirmasi = await showDialog<bool>(
-  context: context,
-  builder: (context) => AlertDialog(
-    backgroundColor: const Color.fromRGBO(0, 6, 47, 1.0),
-    title: const Text("Konfirmasi Hapus", style: TextStyle(color: Colors.white)),
-    content: const Text("Yakin ingin menghapus kardus ini?", style: TextStyle(color: Colors.white70)),
-    actions: [
-      TextButton(
-        onPressed: () => Navigator.pop(context, false),
-        child: const Text("Tidak", style: TextStyle(color: Colors.white70)),
-      ),
-      TextButton(
-        onPressed: () => Navigator.pop(context, true),
-        child: const Text("Ya", style: TextStyle(color: Color(0xFFD65A38))),
-      ),
-    ],
-  ),
-);
+                                    context: context,
+                                    builder: (context) => AlertDialog(
+                                      backgroundColor: const Color.fromRGBO(0, 6, 47, 1.0),
+                                      title: const Text("Konfirmasi Hapus",
+                                          style: TextStyle(color: Colors.white)),
+                                      content: const Text("Yakin ingin menghapus kardus ini?",
+                                          style: TextStyle(color: Colors.white70)),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () => Navigator.pop(context, false),
+                                          child: const Text("Tidak",
+                                              style: TextStyle(color: Colors.white70)),
+                                        ),
+                                        TextButton(
+                                          onPressed: () => Navigator.pop(context, true),
+                                          child: const Text("Ya",
+                                              style: TextStyle(color: Color(0xFFD65A38))),
+                                        ),
+                                      ],
+                                    ),
+                                  );
                                   if (konfirmasi == true) {
                                     setState(() {
                                       daftarKardus.removeAt(index);
