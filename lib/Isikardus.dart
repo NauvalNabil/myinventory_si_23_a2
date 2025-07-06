@@ -72,7 +72,7 @@ class _IsikardusState extends State<Isikardus> {
     final kardus = widget.kardus;
 
     return Scaffold(
-      backgroundColor: const Color(0xFF16002F),
+      backgroundColor: const Color.fromRGBO(0, 6, 47, 1.0),
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 125, 125, 174),
         leading: IconButton(

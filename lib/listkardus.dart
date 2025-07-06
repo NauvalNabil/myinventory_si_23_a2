@@ -38,7 +38,7 @@ class _ListkardusState extends State<Listkardus> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF16002F),
+      backgroundColor: const Color.fromRGBO(0, 6, 47, 1.0),
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 235, 114, 54),
         leading: IconButton(

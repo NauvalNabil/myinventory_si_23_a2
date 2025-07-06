@@ -38,7 +38,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF16002F),
+      backgroundColor: const Color.fromRGBO(0, 6, 47, 1.0),
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 125, 125, 174),
         shape: const RoundedRectangleBorder(
@@ -136,7 +136,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ],
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 14),
             Expanded(
               child: ListView.builder(
                 itemCount: daftarKardus.length,

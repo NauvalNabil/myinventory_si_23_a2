@@ -110,7 +110,7 @@ class _ProfileState extends State<Profile> {
                     backgroundColor: Colors.white,
                     child: const Icon(
                       Icons.person,
-                      size: 50,
+                      size: 100,
                       color: Color(0xFF0F1035),
                     ),
                   ),
