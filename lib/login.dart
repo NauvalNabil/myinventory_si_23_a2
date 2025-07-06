@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'daftar.dart'; // Import file daftar.dart
+import 'daftar.dart';
+import 'home.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -13,7 +14,6 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController passwordController = TextEditingController();
   bool _isLoading = false;
 
-  // Validasi email
   bool isValidEmail(String email) {
     return RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email);
   }
@@ -21,7 +21,7 @@ class _LoginPageState extends State<LoginPage> {
   void login() async {
     final email = emailController.text.trim();
     final password = passwordController.text;
-    
+
     if (email.isEmpty || password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Email dan password harus diisi')),
@@ -34,20 +34,23 @@ class _LoginPageState extends State<LoginPage> {
       setState(() {
         _isLoading = true;
       });
-      
-      // Simulasi proses login
+
       await Future.delayed(const Duration(seconds: 1));
-      
+
       setState(() {
         _isLoading = false;
       });
-      
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Login berhasil sebagai $email')),
       );
-      
-      // Navigasi ke halaman utama aplikasi
-      // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
+
+      print('Login berhasil, pindah ke HomeScreen...');
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const HomeScreen()),
+      );
     }
   }
 
@@ -70,8 +73,6 @@ class _LoginPageState extends State<LoginPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Spacer(),
-              
-              // Logo
               Container(
                 width: 250,
                 height: 250,
@@ -83,8 +84,6 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
               ),
-          
-              // Email TextField
               TextField(
                 controller: emailController,
                 keyboardType: TextInputType.emailAddress,
@@ -101,8 +100,6 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
               const SizedBox(height: 20),
-              
-              // Password TextField
               TextField(
                 controller: passwordController,
                 obscureText: true,
@@ -119,8 +116,6 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
               const SizedBox(height: 40),
-              
-              // Login Button
               SizedBox(
                 width: double.infinity,
                 height: 48,
@@ -148,8 +143,6 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
               const SizedBox(height: 20),
-             
-              // Register Link
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -159,7 +152,6 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   TextButton(
                     onPressed: () {
-                      // Navigasi ke halaman daftar
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -177,7 +169,6 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ],
               ),
-              
               const Spacer(),
             ],
           ),

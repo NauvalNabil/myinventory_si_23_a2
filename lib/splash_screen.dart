@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'login.dart'; 
 
@@ -30,7 +29,6 @@ class _SplashScreenState extends State<SplashScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            
             Container(
               width: 250,
               height: 250,
@@ -42,7 +40,6 @@ class _SplashScreenState extends State<SplashScreen> {
               ),
             ),            
             const SizedBox(height: 10),
-            
             const CircularProgressIndicator(
               valueColor: AlwaysStoppedAnimation<Color>(Colors.deepOrange),
             ),
