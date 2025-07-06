@@ -76,11 +76,12 @@ class _IsikardusState extends State<Isikardus> {
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 125, 125, 174),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () {
-            Navigator.pop(context, widget.kardus);
-          },
-        ),
+  icon: const Icon(Icons.arrow_back, color: Colors.white),
+  onPressed: () {
+    widget.kardus.isiItem = daftarItem; 
+    Navigator.pop(context, widget.kardus);
+  },
+),
         title: const Text("Isi Kardus", style: TextStyle(color: Colors.white)),
       ),
       body: Padding(
