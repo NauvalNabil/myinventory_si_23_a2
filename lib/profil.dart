@@ -1,4 +1,6 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Profile extends StatefulWidget {
@@ -14,6 +16,7 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   String? displayEmail;
   String? displayUsername;
+  String? _imagePath;
   bool _isLoading = true;
 
   @override
@@ -25,11 +28,24 @@ class _ProfileState extends State<Profile> {
   Future<void> _loadProfileData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      
       displayEmail = prefs.getString('email') ?? widget.email;
       displayUsername = prefs.getString('username') ?? widget.username;
+      _imagePath = prefs.getString('profileImage');
       _isLoading = false;
     });
+  }
+
+  Future<void> _pickImage() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _imagePath = pickedFile.path;
+      });
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString('profileImage', pickedFile.path);
+    }
   }
 
   Future<void> _logout() async {
@@ -49,24 +65,15 @@ class _ProfileState extends State<Profile> {
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text(
-                'Batal',
-                style: TextStyle(color: Colors.white70),
-              ),
+              child: const Text('Batal', style: TextStyle(color: Colors.white70)),
             ),
             TextButton(
               onPressed: () async {
-                
                 SharedPreferences prefs = await SharedPreferences.getInstance();
                 await prefs.clear();
-                
-                
                 Navigator.of(context).popUntil((route) => route.isFirst);
               },
-              child: const Text(
-                'Logout',
-                style: TextStyle(color: Color(0xFFD65A38)),
-              ),
+              child: const Text('Logout', style: TextStyle(color: Color(0xFFD65A38))),
             ),
           ],
         );
@@ -81,12 +88,7 @@ class _ProfileState extends State<Profile> {
       appBar: AppBar(
         backgroundColor: const Color(0xFFD65A38),
         elevation: 4,
-        centerTitle: false,
-        titleSpacing: 0,
-        title: const Text(
-          'Profile',
-          style: TextStyle(color: Colors.white),
-        ),
+        title: const Text('Profile', style: TextStyle(color: Colors.white)),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
@@ -96,23 +98,22 @@ class _ProfileState extends State<Profile> {
       ),
       body: _isLoading
           ? const Center(
-              child: CircularProgressIndicator(
-                color: Color(0xFFD65A38),
-              ),
+              child: CircularProgressIndicator(color: Color(0xFFD65A38)),
             )
           : Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const SizedBox(height: 30),
-                Center(
+                GestureDetector(
+                  onTap: _pickImage,
                   child: CircleAvatar(
                     radius: 80,
                     backgroundColor: Colors.white,
-                    child: const Icon(
-                      Icons.person,
-                      size: 100,
-                      color: Color(0xFF0F1035),
-                    ),
+                    backgroundImage:
+                        _imagePath != null ? FileImage(File(_imagePath!)) : null,
+                    child: _imagePath == null
+                        ? const Icon(Icons.person, size: 100, color: Color(0xFF0F1035))
+                        : null,
                   ),
                 ),
                 const SizedBox(height: 30),
@@ -139,16 +140,11 @@ class _ProfileState extends State<Profile> {
                     const SizedBox(width: 10),
                     Text(
                       displayEmail ?? 'Tidak tersedia',
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.normal,
-                        fontSize: 16,
-                      ),
+                      style: const TextStyle(color: Colors.white, fontSize: 16),
                     ),
                   ],
                 ),
                 const SizedBox(height: 50),
-                
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 30),
                   child: SizedBox(

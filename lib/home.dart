@@ -1,5 +1,7 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:myinventory_si_23_a2/buatkardus.dart';
 import 'package:myinventory_si_23_a2/listkardus.dart';
 import 'package:myinventory_si_23_a2/profil.dart';
@@ -34,6 +36,20 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   List<Kardus> daftarKardus = [];
+  String? _imagePath;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadProfileImage();
+  }
+
+  Future<void> _loadProfileImage() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _imagePath = prefs.getString('profileImage');
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,8 +63,8 @@ class _HomeScreenState extends State<HomeScreen> {
         title: Row(
           children: [
             GestureDetector(
-              onTap: () {
-                Navigator.push(
+              onTap: () async {
+                await Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => Profile(
@@ -57,15 +73,16 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                 );
+                _loadProfileImage(); // reload gambar setelah kembali dari profil
               },
-              child: Container(
-                width: 45,
-                height: 45,
-                decoration: const BoxDecoration(
-                  color: Color.fromARGB(255, 235, 114, 54),
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(Icons.person, color: Colors.white, size: 30),
+              child: CircleAvatar(
+                radius: 22.5,
+                backgroundColor: Colors.white,
+                backgroundImage:
+                    _imagePath != null ? FileImage(File(_imagePath!)) : null,
+                child: _imagePath == null
+                    ? const Icon(Icons.person, color: Color(0xFF0F1035), size: 30)
+                    : null,
               ),
             ),
             const SizedBox(width: 10),
