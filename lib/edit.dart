@@ -61,8 +61,8 @@ class _EditKardusState extends State<EditKardus> {
       backgroundColor: const Color(0xFF16002F),
       appBar: AppBar(
         iconTheme: IconThemeData(color: Colors.white),
-        title: Text("Edit Kerdus", style: TextStyle(color: Colors.white)),
-        backgroundColor: Color.fromARGB(225, 125, 125, 174),
+        title: Text("Edit Kardus", style: TextStyle(color: Colors.white)),
+        backgroundColor: Color.fromARGB(255, 235, 114, 54),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -79,7 +79,7 @@ class _EditKardusState extends State<EditKardus> {
             SizedBox(height: 20),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.brown.shade300,
+                backgroundColor: const Color.fromARGB(255, 235, 114, 54),
                 padding: EdgeInsets.symmetric(horizontal: 32, vertical: 12),
               ),
               onPressed: () {
