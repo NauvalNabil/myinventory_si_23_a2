@@ -32,22 +32,23 @@ class _IsikardusState extends State<Isikardus> {
 
   Future<void> hapusItem(int index) async {
     final konfirmasi = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text("Peringatan !"),
-        content: const Text("Yakin ingin menghapus item ini?"),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text("Tidak"),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: const Text("Ya"),
-          ),
-        ],
+  context: context,
+  builder: (context) => AlertDialog(
+    backgroundColor: const Color.fromRGBO(0, 6, 47, 1.0),
+    title: const Text("Konfirmasi Hapus", style: TextStyle(color: Colors.white)),
+    content: const Text("Yakin ingin menghapus item ini?", style: TextStyle(color: Colors.white70)),
+    actions: [
+      TextButton(
+        onPressed: () => Navigator.pop(context, false),
+        child: const Text("Tidak", style: TextStyle(color: Colors.white70)),
       ),
-    );
+      TextButton(
+        onPressed: () => Navigator.pop(context, true),
+        child: const Text("Ya", style: TextStyle(color: Color(0xFFD65A38))),
+      ),
+    ],
+  ),
+);
 
     if (konfirmasi == true) {
       setState(() {

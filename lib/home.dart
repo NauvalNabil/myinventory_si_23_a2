@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:image_picker/image_picker.dart'; 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:myinventory_si_23_a2/buatkardus.dart';
 import 'package:myinventory_si_23_a2/listkardus.dart';
@@ -12,7 +12,7 @@ class Kardus {
   String kategori;
   String deskripsi;
   String lokasi;
-  XFile? gambar;
+  XFile? gambar; 
   List<Item> isiItem;
 
   Kardus({
@@ -28,7 +28,7 @@ class HomeScreen extends StatefulWidget {
   final String username;
   final String email;
 
-  const HomeScreen({super.key, required this.username, required this.email});
+  HomeScreen({super.key, required this.username, required this.email});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -37,10 +37,12 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   List<Kardus> daftarKardus = [];
   String? _imagePath;
+  late String username; 
 
   @override
   void initState() {
     super.initState();
+    username = widget.username; 
     _loadProfileImage();
   }
 
@@ -49,6 +51,25 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       _imagePath = prefs.getString('profileImage');
     });
+  }
+
+  Future<void> _navigateToProfile() async {
+    final updatedUsername = await Navigator.push<String>(
+      context,
+      MaterialPageRoute(
+        builder: (context) => Profile(
+          username: username,
+          email: widget.email,
+        ),
+      ),
+    );
+
+    if (updatedUsername != null && updatedUsername.isNotEmpty) {
+      setState(() {
+        username = updatedUsername; 
+      });
+    }
+    _loadProfileImage(); 
   }
 
   @override
@@ -63,18 +84,7 @@ class _HomeScreenState extends State<HomeScreen> {
         title: Row(
           children: [
             GestureDetector(
-              onTap: () async {
-                await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => Profile(
-                      username: widget.username,
-                      email: widget.email,
-                    ),
-                  ),
-                );
-                _loadProfileImage(); // reload gambar setelah kembali dari profil
-              },
+              onTap: _navigateToProfile,
               child: CircleAvatar(
                 radius: 22.5,
                 backgroundColor: Colors.white,
@@ -87,7 +97,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             const SizedBox(width: 10),
             Text(
-              "Selamat datang, ${widget.username}",
+              "Selamat datang, $username",
               style: const TextStyle(color: Colors.white, fontSize: 18),
             ),
           ],
@@ -174,7 +184,8 @@ class _HomeScreenState extends State<HomeScreen> {
                               final hasil = await Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => Isikardus(kardus: kardus),
+                                  builder: (context) =>
+                                      Isikardus(kardus: kardus),
                                 ),
                               );
                               if (hasil != null && hasil is Kardus) {

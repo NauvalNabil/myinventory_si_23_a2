@@ -152,22 +152,23 @@ class _ListkardusState extends State<Listkardus> {
                                 icon: const Icon(Icons.delete, size: 18, color: Colors.black),
                                 onPressed: () async {
                                   final konfirmasi = await showDialog<bool>(
-                                    context: context,
-                                    builder: (context) => AlertDialog(
-                                      title: const Text("Peringatan !"),
-                                      content: const Text("Yakin ingin menghapus kardus ini?"),
-                                      actions: [
-                                        TextButton(
-                                          onPressed: () => Navigator.pop(context, false),
-                                          child: const Text("Tidak"),
-                                        ),
-                                        TextButton(
-                                          onPressed: () => Navigator.pop(context, true),
-                                          child: const Text("Ya"),
-                                        ),
-                                      ],
-                                    ),
-                                  );
+  context: context,
+  builder: (context) => AlertDialog(
+    backgroundColor: const Color.fromRGBO(0, 6, 47, 1.0),
+    title: const Text("Konfirmasi Hapus", style: TextStyle(color: Colors.white)),
+    content: const Text("Yakin ingin menghapus kardus ini?", style: TextStyle(color: Colors.white70)),
+    actions: [
+      TextButton(
+        onPressed: () => Navigator.pop(context, false),
+        child: const Text("Tidak", style: TextStyle(color: Colors.white70)),
+      ),
+      TextButton(
+        onPressed: () => Navigator.pop(context, true),
+        child: const Text("Ya", style: TextStyle(color: Color(0xFFD65A38))),
+      ),
+    ],
+  ),
+);
                                   if (konfirmasi == true) {
                                     setState(() {
                                       daftarKardus.removeAt(index);

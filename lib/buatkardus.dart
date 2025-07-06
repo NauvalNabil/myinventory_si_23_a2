@@ -21,7 +21,7 @@ class _BuatkardusState extends State<Buatkardus> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF16002F),
+      backgroundColor: const Color.fromRGBO(0, 6, 47, 1.0),
       appBar: AppBar(
         iconTheme: IconThemeData(color: Colors.white),
         title: Text(style: TextStyle(color: Colors.white),"Buat Kardus"),

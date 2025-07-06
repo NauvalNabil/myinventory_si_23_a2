@@ -42,10 +42,68 @@ class _ProfileState extends State<Profile> {
       setState(() {
         _imagePath = pickedFile.path;
       });
-
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setString('profileImage', pickedFile.path);
     }
+  }
+
+  Future<void> _editUsername() async {
+    TextEditingController usernameController =
+        TextEditingController(text: displayUsername ?? '');
+
+    await showDialog(
+      context: context,
+      barrierDismissible: false,
+      useSafeArea: true,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: const Color.fromRGBO(0, 6, 47, 1.0),
+          title: const Text('Edit Username', style: TextStyle(color: Colors.white)),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: usernameController,
+                  style: const TextStyle(color: Colors.white),
+                  decoration: const InputDecoration(
+                    hintText: 'Masukkan username baru',
+                    hintStyle: TextStyle(color: Colors.white54),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Color(0xFFD65A38)),
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.orangeAccent),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Batal', style: TextStyle(color: Colors.white70)),
+            ),
+            TextButton(
+              onPressed: () async {
+                final newUsername = usernameController.text.trim();
+                if (newUsername.isNotEmpty) {
+                  SharedPreferences prefs = await SharedPreferences.getInstance();
+                  await prefs.setString('username', newUsername);
+                  setState(() {
+                    displayUsername = newUsername;
+                  });
+                  Navigator.pop(context);
+                  Navigator.pop(context, newUsername);
+                }
+              },
+              child: const Text('Simpan', style: TextStyle(color: Color(0xFFD65A38))),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Future<void> _logout() async {
@@ -54,14 +112,8 @@ class _ProfileState extends State<Profile> {
       builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor: const Color.fromRGBO(0, 6, 47, 1.0),
-          title: const Text(
-            'Konfirmasi Logout',
-            style: TextStyle(color: Colors.white),
-          ),
-          content: const Text(
-            'Apakah Anda yakin ingin keluar?',
-            style: TextStyle(color: Colors.white70),
-          ),
+          title: const Text('Konfirmasi Logout', style: TextStyle(color: Colors.white)),
+          content: const Text('Apakah Anda yakin ingin keluar?', style: TextStyle(color: Colors.white70)),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
@@ -86,20 +138,18 @@ class _ProfileState extends State<Profile> {
     return Scaffold(
       backgroundColor: const Color.fromRGBO(0, 6, 47, 1.0),
       appBar: AppBar(
-        backgroundColor: const Color(0xFFD65A38),
+        backgroundColor: const Color.fromARGB(255, 235, 114, 54),
         elevation: 4,
         title: const Text('Profile', style: TextStyle(color: Colors.white)),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.pop(context, displayUsername);
           },
         ),
       ),
       body: _isLoading
-          ? const Center(
-              child: CircularProgressIndicator(color: Color(0xFFD65A38)),
-            )
+          ? const Center(child: CircularProgressIndicator(color: Color(0xFFD65A38)))
           : Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -130,6 +180,11 @@ class _ProfileState extends State<Profile> {
                         fontSize: 16,
                       ),
                     ),
+                    const SizedBox(width: 10),
+                    GestureDetector(
+                      onTap: _editUsername,
+                      child: const Icon(Icons.edit, color: Colors.white70),
+                    ),
                   ],
                 ),
                 const SizedBox(height: 20),
@@ -153,7 +208,7 @@ class _ProfileState extends State<Profile> {
                     child: ElevatedButton(
                       onPressed: _logout,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFFD65A38),
+                        backgroundColor: const Color.fromARGB(255, 235, 114, 54),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
