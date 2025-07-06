@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Daftar extends StatefulWidget {
   const Daftar({super.key});
@@ -12,31 +12,42 @@ class _DaftarState extends State<Daftar> {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  bool _isPasswordVisible = false; 
 
-  void daftar() {
+  Future<void> daftar() async {
     final username = usernameController.text.trim();
     final email = emailController.text.trim();
     final password = passwordController.text;
-    
+
     if (username.isEmpty || email.isEmpty || password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Semua field harus diisi')),
       );
-    } else {
+    } else if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email)) {
+      
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Pendaftaran berhasil untuk $email')),
+        const SnackBar(content: Text('Format email tidak valid')),
       );
-      // Kembali ke halaman login setelah berhasil daftar
+    } else if (password.length < 6) {
+     
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Password minimal 6 karakter')),
+      );
+    } else {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString('username', username);
+      await prefs.setString('email', email);
+      await prefs.setString('password', password);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Pendaftaran berhasil untuk $username'),
+          backgroundColor: Colors.green,
+        ),
+      );
+
       Navigator.pop(context);
     }
-  }
-
-  @override
-  void dispose() {
-    usernameController.dispose();
-    emailController.dispose();
-    passwordController.dispose();
-    super.dispose();
   }
 
   @override
@@ -46,16 +57,12 @@ class _DaftarState extends State<Daftar> {
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 30),
         child: ConstrainedBox(
-          constraints: BoxConstraints(
-            minHeight: MediaQuery.of(context).size.height,
-          ),
+          constraints: BoxConstraints(minHeight: MediaQuery.of(context).size.height),
           child: IntrinsicHeight(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Logo atau spacing
                 const SizedBox(height: 100),
-                
                 TextField(
                   controller: usernameController,
                   style: const TextStyle(color: Colors.white),
@@ -66,15 +73,11 @@ class _DaftarState extends State<Daftar> {
                       borderSide: BorderSide(color: Color(0xFFDB6A3E)),
                     ),
                     focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Color(0xFFFF7B54),
-                        width: 2,
-                      ),
+                      borderSide: BorderSide(color: Color(0xFFFF7B54), width: 2),
                     ),
                   ),
                 ),
                 const SizedBox(height: 20),
-
                 TextField(
                   controller: emailController,
                   keyboardType: TextInputType.emailAddress,
@@ -86,35 +89,41 @@ class _DaftarState extends State<Daftar> {
                       borderSide: BorderSide(color: Color(0xFFDB6A3E)),
                     ),
                     focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Color(0xFFFF7B54),
-                        width: 2,
-                      ),
+                      borderSide: BorderSide(color: Color(0xFFFF7B54), width: 2),
                     ),
                   ),
                 ),
                 const SizedBox(height: 20),
-
                 TextField(
                   controller: passwordController,
-                  obscureText: true,
+                  obscureText: !_isPasswordVisible, 
                   style: const TextStyle(color: Colors.white),
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     hintText: 'Password',
-                    hintStyle: TextStyle(color: Colors.grey),
-                    enabledBorder: UnderlineInputBorder(
+                    hintStyle: const TextStyle(color: Colors.grey),
+                    enabledBorder: const UnderlineInputBorder(
                       borderSide: BorderSide(color: Color(0xFFDB6A3E)),
                     ),
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Color(0xFFFF7B54),
-                        width: 2,
+                    focusedBorder: const UnderlineInputBorder(
+                      borderSide: BorderSide(color: Color(0xFFFF7B54), width: 2),
+                    ),
+                    
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                        color: const Color(0xFFDB6A3E), 
+                        size: 24,
                       ),
+                      onPressed: () {
+                        setState(() {
+                          _isPasswordVisible = !_isPasswordVisible;
+                        });
+                      },
+                      splashRadius: 20,
                     ),
                   ),
                 ),
                 const SizedBox(height: 30),
-
                 SizedBox(
                   width: double.infinity,
                   height: 48,
@@ -137,30 +146,16 @@ class _DaftarState extends State<Daftar> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                
-                // Tombol untuk kembali ke login
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text(
-                      'Sudah punya akun? ',
-                      style: TextStyle(color: Colors.white70),
-                    ),
+                    const Text('Sudah punya akun? ', style: TextStyle(color: Colors.white70)),
                     TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: const Text(
-                        'Login sekarang',
-                        style: TextStyle(
-                          color: Color(0xFFDB6A3E),
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text('Login sekarang', style: TextStyle(color: Color(0xFFDB6A3E), fontWeight: FontWeight.bold)),
                     ),
                   ],
                 ),
-                // Spacing tambahan untuk keyboard
                 const SizedBox(height: 100),
               ],
             ),

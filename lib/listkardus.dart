@@ -98,7 +98,7 @@ class _ListkardusState extends State<Listkardus> {
                         right: 4,
                         child: Row(
                           children: [
-                            // Tombol edit
+                            
                             Container(
                               width: 36,
                               height: 36,
@@ -132,7 +132,7 @@ class _ListkardusState extends State<Listkardus> {
                                 },
                               ),
                             ),
-                            // Tombol hapus
+                            
                             Container(
                               width: 36,
                               height: 36,
