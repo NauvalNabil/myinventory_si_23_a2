@@ -1,16 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'splash_screen.dart';
 
-void main() {
-  runApp(const MyApp());
+
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+Future<void> main() async {
+  await Supabase.initialize(
+    url: 'https://fuvjhhztvohsyvwzdvis.supabase.co',
+    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ1dmpoaHp0dm9oc3l2d3pkdmlzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTIwNjQwMTQsImV4cCI6MjA2NzY0MDAxNH0.rsL33X6Vao2cntAAQFtRbOnh8DtsbS959iHZf8_prz8',
+  );
+  runApp(MyApp());
 }
+        
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       title: 'MyInventory',
       theme: ThemeData(
         primarySwatch: Colors.deepOrange,

@@ -2,6 +2,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:get/get.dart';
+import 'package:myinventory_si_23_a2/services/authServices.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key, required this.username, required this.email});
@@ -18,6 +20,7 @@ class _ProfileState extends State<Profile> {
   String? displayUsername;
   String? _imagePath;
   bool _isLoading = true;
+  final AuthService _authService = AuthService();
 
   @override
   void initState() {
@@ -116,14 +119,19 @@ class _ProfileState extends State<Profile> {
           content: const Text('Apakah Anda yakin ingin keluar?', style: TextStyle(color: Colors.white70)),
           actions: [
             TextButton(
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () => Get.back(),
               child: const Text('Batal', style: TextStyle(color: Colors.white70)),
             ),
             TextButton(
               onPressed: () async {
-                SharedPreferences prefs = await SharedPreferences.getInstance();
-                await prefs.clear();
-                Navigator.of(context).popUntil((route) => route.isFirst);
+                try {
+                  await _authService.logout();
+                  SharedPreferences prefs = await SharedPreferences.getInstance();
+                  await prefs.clear();
+                  Get.offAllNamed('/'); // Ganti '/' dengan route login jika ada
+                } catch (e) {
+                  Get.snackbar('Error', 'Logout gagal', snackPosition: SnackPosition.BOTTOM);
+                }
               },
               child: const Text('Logout', style: TextStyle(color: Color(0xFFD65A38))),
             ),

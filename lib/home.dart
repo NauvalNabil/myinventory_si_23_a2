@@ -28,7 +28,7 @@ class HomeScreen extends StatefulWidget {
   final String username;
   final String email;
 
-  HomeScreen({super.key, required this.username, required this.email});
+  const HomeScreen({super.key, required this.username, required this.email});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();

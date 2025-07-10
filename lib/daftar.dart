@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:myinventory_si_23_a2/home.dart';
+import 'package:myinventory_si_23_a2/services/authServices.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Daftar extends StatefulWidget {
@@ -12,6 +15,9 @@ class _DaftarState extends State<Daftar> {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+
+  final AuthService _authService = AuthService();
+
   bool _isPasswordVisible = false; 
 
   Future<void> daftar() async {
@@ -128,7 +134,30 @@ class _DaftarState extends State<Daftar> {
                   width: double.infinity,
                   height: 48,
                   child: ElevatedButton(
-                    onPressed: daftar,
+                    onPressed: () async {
+                      final user = await _authService.register(
+                        email: emailController.text,
+                        password: passwordController.text,
+                        username: usernameController.text,
+                      );
+                      if (user != null) {
+                        // Login otomatis setelah registrasi
+                        final loginUser = await _authService.login(
+                          email: emailController.text,
+                          password: passwordController.text,
+                        );
+                        if (loginUser != null) {
+                          Get.offAll(() => HomeScreen(
+                                username: loginUser.username ?? '',
+                                email: loginUser.email,
+                              ));
+                        } else {
+                          Get.snackbar('Error', 'Login otomatis gagal setelah registrasi.', snackPosition: SnackPosition.BOTTOM);
+                        }
+                      } else {
+                        Get.snackbar('Error', 'Registrasi gagal.', snackPosition: SnackPosition.BOTTOM);
+                      }
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFFDB6A3E),
                       shape: RoundedRectangleBorder(
@@ -151,7 +180,7 @@ class _DaftarState extends State<Daftar> {
                   children: [
                     const Text('Sudah punya akun? ', style: TextStyle(color: Colors.white70)),
                     TextButton(
-                      onPressed: () => Navigator.pop(context),
+                      onPressed: () => Get.back(),
                       child: const Text('Login sekarang', style: TextStyle(color: Color(0xFFDB6A3E), fontWeight: FontWeight.bold)),
                     ),
                   ],

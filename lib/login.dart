@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:myinventory_si_23_a2/services/authServices.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'daftar.dart';
 import 'home.dart';
@@ -13,6 +14,8 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+
+  final AuthService _authService = AuthService();
   bool _isLoading = false;
   bool _isPasswordVisible = false; 
 
@@ -135,7 +138,35 @@ class _LoginPageState extends State<LoginPage> {
                 width: double.infinity,
                 height: 48,
                 child: ElevatedButton(
-                  onPressed: _isLoading ? null : login,
+                  onPressed: _isLoading
+                      ? null
+                      : () async {
+                          setState(() {
+                            _isLoading = true;
+                          });
+                          final user = await _authService.login(
+                            email: emailController.text,
+                            password: passwordController.text,
+                          );
+                          setState(() {
+                            _isLoading = false;
+                          });
+                          if (user != null) {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => HomeScreen(
+                                  username: user.username ?? '',
+                                  email: user.email,
+                                ),
+                              ),
+                            );
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Email atau password salah!')),
+                            );
+                          }
+                        },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFDB6A3E),
                     shape: RoundedRectangleBorder(
