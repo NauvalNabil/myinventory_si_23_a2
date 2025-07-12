@@ -27,8 +27,9 @@ class _LoginPageState extends State<LoginPage> {
     if (emailController.text.isEmpty || passwordController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-            content: Text('Email dan password harus diisi!'),
-            backgroundColor: Colors.orange),
+          content: Text('Email dan password harus diisi!'),
+          backgroundColor: Colors.orange,
+        ),
       );
       return;
     }
@@ -49,10 +50,11 @@ class _LoginPageState extends State<LoginPage> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => HomeScreen(
-              username: user.username ?? '',
-              email: user.email,
-            ),
+            builder:
+                (context) => HomeScreen(
+                  username: user.username ?? '',
+                  email: user.email,
+                ),
           ),
         );
       }
@@ -104,7 +106,7 @@ class _LoginPageState extends State<LoginPage> {
                 keyboardType: TextInputType.emailAddress,
                 style: const TextStyle(color: Colors.white),
                 decoration: const InputDecoration(
-                  labelText: 'Email',
+                  labelText: 'emol',
                   labelStyle: TextStyle(color: Colors.white70),
                   enabledBorder: UnderlineInputBorder(
                     borderSide: BorderSide(color: Color(0xFFDB6A3E)),
@@ -148,29 +150,38 @@ class _LoginPageState extends State<LoginPage> {
                 width: double.infinity,
                 height: 48,
                 child: ElevatedButton(
-                  onPressed: _isLoading ? null : _login, // Panggil fungsi _login
+                  onPressed:
+                      _isLoading ? null : _login, // Panggil fungsi _login
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFDB6A3E),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  child: _isLoading
-                      ? const CircularProgressIndicator(
-                          color: Colors.white, strokeWidth: 2)
-                      : const Text('LOGIN',
-                          style: TextStyle(
+                  child:
+                      _isLoading
+                          ? const CircularProgressIndicator(
+                            color: Colors.white,
+                            strokeWidth: 2,
+                          )
+                          : const Text(
+                            'LOGIN',
+                            style: TextStyle(
                               color: Colors.white,
                               fontSize: 16,
-                              fontWeight: FontWeight.bold)),
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                 ),
               ),
               const SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text('Belum punya akun? ',
-                      style: TextStyle(color: Colors.white70)),
+                  const Text(
+                    'Belum punya akun? ',
+                    style: TextStyle(color: Colors.white70),
+                  ),
                   TextButton(
                     onPressed: () {
                       Navigator.push(
@@ -178,10 +189,13 @@ class _LoginPageState extends State<LoginPage> {
                         MaterialPageRoute(builder: (context) => const Daftar()),
                       );
                     },
-                    child: const Text('Daftar sekarang',
-                        style: TextStyle(
-                            color: Color(0xFFDB6A3E),
-                            fontWeight: FontWeight.bold)),
+                    child: const Text(
+                      'Daftar sekarang',
+                      style: TextStyle(
+                        color: Color(0xFFDB6A3E),
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                 ],
               ),
