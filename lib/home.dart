@@ -1,28 +1,12 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart'; 
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:myinventory_si_23_a2/models/kardusModel.dart';
+import 'package:myinventory_si_23_a2/services/kardusService.dart';
 import 'package:myinventory_si_23_a2/buatkardus.dart';
 import 'package:myinventory_si_23_a2/listkardus.dart';
 import 'package:myinventory_si_23_a2/profil.dart';
 import 'package:myinventory_si_23_a2/isikardus.dart';
-import 'package:myinventory_si_23_a2/kartuisi.dart';
-
-class Kardus {
-  String kategori;
-  String deskripsi;
-  String lokasi;
-  XFile? gambar; 
-  List<Item> isiItem;
-
-  Kardus({
-    required this.kategori,
-    required this.deskripsi,
-    required this.lokasi,
-    this.gambar,
-    this.isiItem = const [],
-  });
-}
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class HomeScreen extends StatefulWidget {
   final String username;
@@ -35,22 +19,56 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  List<Kardus> daftarKardus = [];
-  String? _imagePath;
-  late String username; 
+  late String username;
+  String? _imageUrl;
+  late final KardusService _kardusService;
+  List<KardusModel> daftarKardus = [];
+  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    username = widget.username; 
+    username = widget.username;
+    _kardusService = KardusService();
+    _loadKardus();
     _loadProfileImage();
   }
 
   Future<void> _loadProfileImage() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _imagePath = prefs.getString('profileImage');
-    });
+    final currentUser = Supabase.instance.client.auth.currentUser;
+    if (currentUser != null) {
+      final userMetadata = currentUser.userMetadata;
+      if (mounted) {
+        setState(() {
+          _imageUrl = userMetadata?['avatar_url'];
+        });
+      }
+    }
+  }
+
+  Future<void> _loadKardus() async {
+    setState(() => _isLoading = true);
+    try {
+      final kardusList = await _kardusService.getAllKardus();
+      if (mounted) {
+        setState(() {
+          daftarKardus = kardusList;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Gagal memuat kardus: $e"),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
   }
 
   Future<void> _navigateToProfile() async {
@@ -66,10 +84,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
     if (updatedUsername != null && updatedUsername.isNotEmpty) {
       setState(() {
-        username = updatedUsername; 
+        username = updatedUsername;
       });
     }
-    _loadProfileImage(); 
+    _loadProfileImage();
   }
 
   @override
@@ -89,8 +107,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 radius: 22.5,
                 backgroundColor: Colors.white,
                 backgroundImage:
-                    _imagePath != null ? FileImage(File(_imagePath!)) : null,
-                child: _imagePath == null
+                    _imageUrl != null ? CachedNetworkImageProvider(_imageUrl!) : null,
+                child: _imageUrl == null
                     ? const Icon(Icons.person, color: Color(0xFF0F1035), size: 30)
                     : null,
               ),
@@ -103,141 +121,155 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 16),
-        child: Column(
-          children: [
-            Row(
-              children: [
-                GestureDetector(
-                  onTap: () async {
-                    final hasil = await Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => Buatkardus()),
-                    );
-                    if (hasil != null && hasil is Kardus) {
-                      setState(() {
-                        daftarKardus.add(hasil);
-                      });
-                    }
-                  },
-                  child: Container(
-                    height: 50,
-                    width: 150,
-                    decoration: BoxDecoration(
-                      color: const Color.fromARGB(255, 235, 114, 54),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: const Center(
-                      child: Icon(Icons.add, color: Colors.white, size: 40),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 16),
-                GestureDetector(
-                  onTap: () async {
-                    final hasilList = await Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => Listkardus(kardus: daftarKardus),
-                      ),
-                    );
-                    if (hasilList != null && hasilList is List<Kardus>) {
-                      setState(() {
-                        daftarKardus = hasilList;
-                      });
-                    }
-                  },
-                  child: Container(
-                    height: 50,
-                    width: 150,
-                    decoration: BoxDecoration(
-                      color: const Color.fromARGB(255, 235, 114, 54),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: const Center(
-                      child: Icon(Icons.format_list_bulleted,
-                          color: Colors.white, size: 35),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 14),
-            Expanded(
-              child: ListView.builder(
-                itemCount: daftarKardus.length,
-                itemBuilder: (context, index) {
-                  final kardus = daftarKardus[index];
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 4),
-                    child: Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Row(
-                        children: [
-                          GestureDetector(
-                            onTap: () async {
-                              final hasil = await Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      Isikardus(kardus: kardus),
-                                ),
-                              );
-                              if (hasil != null && hasil is Kardus) {
-                                setState(() {
-                                  daftarKardus[index] = hasil;
-                                });
-                              }
-                            },
-                            child: Container(
-                              width: 60,
-                              height: 60,
-                              margin: const EdgeInsets.only(right: 12),
-                              decoration: BoxDecoration(
-                                color:
-                                    const Color.fromARGB(255, 125, 125, 174),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: const Icon(Icons.folder_copy,
-                                  size: 40, color: Colors.white),
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator(color: Colors.white))
+          : Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 16),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () async {
+                            await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const Buatkardus()),
+                            );
+                            _loadKardus();
+                          },
+                          child: Container(
+                            height: 50,
+                            decoration: BoxDecoration(
+                              color: const Color.fromARGB(255, 235, 114, 54),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: const Center(
+                              child:
+                                  Icon(Icons.add, color: Colors.white, size: 40),
                             ),
                           ),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () async {
+                            final hasilList = await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    Listkardus(kardus: daftarKardus),
+                              ),
+                            );
+                            if (hasilList != null &&
+                                hasilList is List<KardusModel>) {
+                              setState(() {
+                                daftarKardus = hasilList;
+                              });
+                            }
+                          },
+                          child: Container(
+                            height: 50,
+                            decoration: BoxDecoration(
+                              color: const Color.fromARGB(255, 235, 114, 54),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: const Center(
+                              child: Icon(Icons.format_list_bulleted,
+                                  color: Colors.white, size: 35),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 14),
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: daftarKardus.length,
+                      itemBuilder: (context, index) {
+                        final kardus = daftarKardus[index];
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 4),
+                          child: Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Row(
                               children: [
-                                Text(
-                                  kardus.kategori.toUpperCase(),
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.bold),
+                                GestureDetector(
+                                  onTap: () async {
+                                    await Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            Isikardus(kardus: kardus),
+                                      ),
+                                    );
+                                    _loadKardus();
+                                  },
+                                  child: Container(
+                                    width: 60,
+                                    height: 60,
+                                    margin: const EdgeInsets.only(right: 12),
+                                    decoration: BoxDecoration(
+                                      color: const Color.fromARGB(
+                                          255, 125, 125, 174),
+                                      borderRadius: BorderRadius.circular(8),
+                                      image: kardus.gambar != null &&
+                                              kardus.gambar!.isNotEmpty
+                                          ? DecorationImage(
+                                              image: CachedNetworkImageProvider(kardus.gambar!),
+                                              fit: BoxFit.cover,
+                                            )
+                                          : null,
+                                    ),
+                                    child: (kardus.gambar == null ||
+                                            kardus.gambar!.isEmpty)
+                                        ? const Icon(Icons.folder_copy,
+                                            size: 40, color: Colors.white)
+                                        : null,
+                                  ),
                                 ),
-                                const SizedBox(height: 4),
-                                Text(kardus.deskripsi,
-                                    style: const TextStyle(fontSize: 12)),
-                                const SizedBox(height: 4),
-                                Text(
-                                  kardus.lokasi.toUpperCase(),
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.bold),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        kardus.kategori.toUpperCase(),
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Text(kardus.deskripsi ?? '',
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 1,
+                                          style: const TextStyle(fontSize: 12)),
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        (kardus.lokasi ?? '').toUpperCase(),
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ],
                             ),
                           ),
-                        ],
-                      ),
+                        );
+                      },
                     ),
-                  );
-                },
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
-      ),
     );
   }
 }

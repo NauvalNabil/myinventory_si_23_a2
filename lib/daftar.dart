@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:myinventory_si_23_a2/home.dart';
 import 'package:myinventory_si_23_a2/services/authServices.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class Daftar extends StatefulWidget {
   const Daftar({super.key});
@@ -17,44 +16,8 @@ class _DaftarState extends State<Daftar> {
   final TextEditingController passwordController = TextEditingController();
 
   final AuthService _authService = AuthService();
-
-  bool _isPasswordVisible = false; 
-
-  Future<void> daftar() async {
-    final username = usernameController.text.trim();
-    final email = emailController.text.trim();
-    final password = passwordController.text;
-
-    if (username.isEmpty || email.isEmpty || password.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Semua field harus diisi')),
-      );
-    } else if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email)) {
-      
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Format email tidak valid')),
-      );
-    } else if (password.length < 6) {
-     
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Password minimal 6 karakter')),
-      );
-    } else {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setString('username', username);
-      await prefs.setString('email', email);
-      await prefs.setString('password', password);
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Pendaftaran berhasil untuk $username'),
-          backgroundColor: Colors.green,
-        ),
-      );
-
-      Navigator.pop(context);
-    }
-  }
+  bool _isLoading = false;
+  bool _isPasswordVisible = false;
 
   @override
   Widget build(BuildContext context) {
@@ -102,7 +65,7 @@ class _DaftarState extends State<Daftar> {
                 const SizedBox(height: 20),
                 TextField(
                   controller: passwordController,
-                  obscureText: !_isPasswordVisible, 
+                  obscureText: !_isPasswordVisible,
                   style: const TextStyle(color: Colors.white),
                   decoration: InputDecoration(
                     hintText: 'Password',
@@ -113,11 +76,10 @@ class _DaftarState extends State<Daftar> {
                     focusedBorder: const UnderlineInputBorder(
                       borderSide: BorderSide(color: Color(0xFFFF7B54), width: 2),
                     ),
-                    
                     suffixIcon: IconButton(
                       icon: Icon(
                         _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
-                        color: const Color(0xFFDB6A3E), 
+                        color: const Color(0xFFDB6A3E),
                         size: 24,
                       ),
                       onPressed: () {
@@ -133,46 +95,56 @@ class _DaftarState extends State<Daftar> {
                 SizedBox(
                   width: double.infinity,
                   height: 48,
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      final user = await _authService.register(
-                        email: emailController.text,
-                        password: passwordController.text,
-                        username: usernameController.text,
-                      );
-                      if (user != null) {
-                        // Login otomatis setelah registrasi
-                        final loginUser = await _authService.login(
-                          email: emailController.text,
-                          password: passwordController.text,
-                        );
-                        if (loginUser != null) {
-                          Get.offAll(() => HomeScreen(
-                                username: loginUser.username ?? '',
-                                email: loginUser.email,
-                              ));
-                        } else {
-                          Get.snackbar('Error', 'Login otomatis gagal setelah registrasi.', snackPosition: SnackPosition.BOTTOM);
-                        }
-                      } else {
-                        Get.snackbar('Error', 'Registrasi gagal.', snackPosition: SnackPosition.BOTTOM);
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFFDB6A3E),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                    ),
-                    child: const Text(
-                      'DAFTAR',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        letterSpacing: 1.2,
-                      ),
-                    ),
-                  ),
+                  child: _isLoading
+                      ? const Center(child: CircularProgressIndicator(color: Color(0xFFDB6A3E)))
+                      : ElevatedButton(
+                          onPressed: () async {
+                            if (usernameController.text.isEmpty ||
+                                emailController.text.isEmpty ||
+                                passwordController.text.isEmpty) {
+                              Get.snackbar('Error', 'Semua field harus diisi', snackPosition: SnackPosition.BOTTOM);
+                              return;
+                            }
+                            if (passwordController.text.length < 6) {
+                              Get.snackbar('Error', 'Password minimal 6 karakter', snackPosition: SnackPosition.BOTTOM);
+                              return;
+                            }
+                            setState(() => _isLoading = true);
+                            try {
+                              final user = await _authService.register(
+                                email: emailController.text.trim(),
+                                password: passwordController.text,
+                                username: usernameController.text.trim(),
+                              );
+                              setState(() => _isLoading = false);
+                              if (user != null) {
+                                Get.offAll(() => HomeScreen(
+                                      username: user.username ?? '',
+                                      email: user.email,
+                                    ));
+                              } else {
+                                Get.snackbar('Error', 'Registrasi gagal.', snackPosition: SnackPosition.BOTTOM);
+                              }
+                            } catch (e) {
+                              setState(() => _isLoading = false);
+                              Get.snackbar('Error', 'Registrasi gagal: ${e.toString()}', snackPosition: SnackPosition.BOTTOM);
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFFDB6A3E),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                          ),
+                          child: const Text(
+                            'DAFTAR',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                              letterSpacing: 1.2,
+                            ),
+                          ),
+                        ),
                 ),
                 const SizedBox(height: 20),
                 Row(

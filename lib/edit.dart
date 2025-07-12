@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:myinventory_si_23_a2/home.dart';
+import 'package:myinventory_si_23_a2/models/kardusModel.dart';
+import 'package:myinventory_si_23_a2/services/kardusService.dart'; // Import service untuk update
 
 class EditKardus extends StatefulWidget {
-  final Kardus kardus;
-  
+  final KardusModel kardus;
 
   const EditKardus({super.key, required this.kardus});
 
@@ -16,22 +16,26 @@ class _EditKardusState extends State<EditKardus> {
   late TextEditingController deskripsiController;
   late TextEditingController lokasiController;
 
+  final KardusService _kardusService = KardusService();
+  bool _isLoading = false;
+
   @override
-  void initState(){
+  void initState() {
     super.initState();
     kategoriController = TextEditingController(text: widget.kardus.kategori);
     deskripsiController = TextEditingController(text: widget.kardus.deskripsi);
     lokasiController = TextEditingController(text: widget.kardus.lokasi);
   }
+
   @override
-  void dispose(){
+  void dispose() {
     kategoriController.dispose();
     deskripsiController.dispose();
     lokasiController.dispose();
     super.dispose();
   }
 
-  Widget _buildLabel(String text){
+  Widget _buildLabel(String text) {
     return Align(
       alignment: Alignment.centerLeft,
       child: Text(
@@ -54,11 +58,11 @@ class _EditKardusState extends State<EditKardus> {
       ),
     );
   }
-  
+
   @override
-  Widget build(BuildContext content) {
+  Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF16002F),
+      backgroundColor: const Color.fromRGBO(0, 6, 47, 1.0),
       appBar: AppBar(
         iconTheme: IconThemeData(color: Colors.white),
         title: Text("Edit Kardus", style: TextStyle(color: Colors.white)),
@@ -77,25 +81,40 @@ class _EditKardusState extends State<EditKardus> {
             _buildLabel("LOKASI"),
             _buildTextField(controller: lokasiController, maxLines: null),
             SizedBox(height: 20),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color.fromARGB(255, 235, 114, 54),
-                padding: EdgeInsets.symmetric(horizontal: 32, vertical: 12),
-              ),
-              onPressed: () {
-                final updatedKardus = Kardus(
-                  kategori: kategoriController.text,
-                  deskripsi: deskripsiController.text,
-                  lokasi: lokasiController.text,
-                );
-                Navigator.pop(context, updatedKardus);
-              },
-              child: Text("SIMPAN",style: TextStyle(color: Colors.white)),
-            ),
+            _isLoading
+                ? const CircularProgressIndicator(color: Colors.white)
+                : ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color.fromARGB(255, 235, 114, 54),
+                      padding: EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                    ),
+                    onPressed: () async {
+                      setState(() => _isLoading = true);
+                      // Gunakan copyWith untuk mempertahankan ID dan field lain yang tidak diubah
+                      final updatedKardus = widget.kardus.copyWith(
+                        kategori: kategoriController.text,
+                        deskripsi: deskripsiController.text,
+                        lokasi: lokasiController.text,
+                      );
+                      try {
+                        await _kardusService.updateKardus(updatedKardus);
+                        setState(() => _isLoading = false);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text("Kardus berhasil disimpan!"), backgroundColor: Colors.green),
+                        );
+                        Navigator.pop(context, updatedKardus);
+                      } catch (e) {
+                        setState(() => _isLoading = false);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("Gagal menyimpan: $e"), backgroundColor: Colors.red),
+                        );
+                      }
+                    },
+                    child: Text("SIMPAN", style: TextStyle(color: Colors.white)),
+                  ),
           ],
         ),
       ),
     );
   }
-
 }
