@@ -1,4 +1,4 @@
-package com.example.myinventory_si_23_a2
+package com.serana.myinventory
 
 import io.flutter.embedding.android.FlutterActivity
 
