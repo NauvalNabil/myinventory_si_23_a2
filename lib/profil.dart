@@ -258,6 +258,7 @@ class _ProfileState extends State<Profile> {
                               borderRadius: BorderRadius.circular(10),
                             ),
                           ),
+                          //tombol logout 
                           child: const Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
