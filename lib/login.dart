@@ -38,14 +38,14 @@ class _LoginPageState extends State<LoginPage> {
       _isLoading = true;
     });
 
-    // Menggunakan try-catch-finally untuk menangani semua kemungkinan
+    
     try {
       final user = await _authService.login(
         email: emailController.text.trim(),
         password: passwordController.text.trim(),
       );
 
-      // Jika login berhasil, navigasi ke HomeScreen
+      
       if (mounted && user != null) {
         Navigator.pushReplacement(
           context,
@@ -59,7 +59,7 @@ class _LoginPageState extends State<LoginPage> {
         );
       }
     } catch (e) {
-      // Jika terjadi error (email/password salah), tampilkan peringatan
+      
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -69,7 +69,7 @@ class _LoginPageState extends State<LoginPage> {
         );
       }
     } finally {
-      // Blok ini akan selalu dieksekusi, memastikan loading berhenti
+      
       if (mounted) {
         setState(() {
           _isLoading = false;
@@ -151,7 +151,7 @@ class _LoginPageState extends State<LoginPage> {
                 height: 48,
                 child: ElevatedButton(
                   onPressed:
-                      _isLoading ? null : _login, // Panggil fungsi _login
+                      _isLoading ? null : _login, 
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFDB6A3E),
                     shape: RoundedRectangleBorder(
