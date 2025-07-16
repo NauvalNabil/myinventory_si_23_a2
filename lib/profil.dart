@@ -65,7 +65,7 @@ class _ProfileState extends State<Profile> {
 
         final imageUrlResponse = _supabase.storage.from(bucketName).getPublicUrl(fileName);
         
-        // PERBAIKAN: Buat URL unik dengan parameter waktu untuk
+        
         final uniqueUrl = '$imageUrlResponse?t=${DateTime.now().millisecondsSinceEpoch}';
 
         await _supabase.auth.updateUser(
@@ -93,7 +93,7 @@ class _ProfileState extends State<Profile> {
     }
   }
   
-  // Fungsi _editUsername dan _logout tidak ada perubahan, tetap sama
+  
   Future<void> _editUsername() async {
     TextEditingController usernameController =
         TextEditingController(text: displayUsername ?? '');
