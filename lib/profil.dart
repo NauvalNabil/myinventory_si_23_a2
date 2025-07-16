@@ -53,7 +53,7 @@ class _ProfileState extends State<Profile> {
       setState(() => _isLoading = true);
       try {
         final file = File(pickedFile.path);
-        // PERBAIKAN: Gunakan nama file yang statis agar menimpa gambar lama di storage
+        
         final fileName = _supabase.auth.currentUser!.id;
         const bucketName = 'profile-pictures';
 
@@ -65,7 +65,7 @@ class _ProfileState extends State<Profile> {
 
         final imageUrlResponse = _supabase.storage.from(bucketName).getPublicUrl(fileName);
         
-        // PERBAIKAN: Buat URL unik dengan parameter waktu untuk cache-busting
+        // PERBAIKAN: Buat URL unik dengan parameter waktu untuk
         final uniqueUrl = '$imageUrlResponse?t=${DateTime.now().millisecondsSinceEpoch}';
 
         await _supabase.auth.updateUser(
