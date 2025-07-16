@@ -20,10 +20,10 @@ class _LoginPageState extends State<LoginPage> {
 
   
   Future<void> _login() async {
-    // Sembunyikan keyboard
+    
     FocusScope.of(context).unfocus();
 
-    // Validasi input kosong
+    
     if (emailController.text.isEmpty || passwordController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
