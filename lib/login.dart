@@ -18,7 +18,7 @@ class _LoginPageState extends State<LoginPage> {
   bool _isLoading = false;
   bool _isPasswordVisible = false;
 
-  // PERBAIKAN: Memisahkan logika login ke dalam fungsi sendiri
+  
   Future<void> _login() async {
     // Sembunyikan keyboard
     FocusScope.of(context).unfocus();
