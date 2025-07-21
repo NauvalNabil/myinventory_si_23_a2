@@ -1,4 +1,3 @@
-
 // File: services/auth_service.dart
 import 'package:myinventory_si_23_a2/models/userModel.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -13,30 +12,45 @@ class AuthService {
     String? username,
   }) async {
     try {
+      print('🔄 Starting registration...');
+      print('📧 Email: $email');
+      print('👤 Username: $username');
+
       final response = await _supabase.auth.signUp(
         email: email,
         password: password,
         data: username != null ? {'username': username} : null,
       );
 
+      print('📋 Registration response: ${response.user?.id}');
+      print('🔐 Session available: ${response.session != null}');
+
       if (response.user != null) {
-        // Setelah register, langsung login
-        final loginResponse = await _supabase.auth.signInWithPassword(
-          email: email,
-          password: password,
-        );
-        if (loginResponse.user != null) {
+        // Jika email confirmation disabled, user langsung aktif
+        if (response.session != null) {
+          print('✅ Registration successful with session');
           return UserModel(
-            id: loginResponse.user!.id,
-            email: loginResponse.user!.email!,
+            id: response.user!.id,
+            email: response.user!.email!,
             username: username,
           );
         } else {
-          throw Exception('Login otomatis gagal setelah registrasi.');
+          print(
+            '⚠️ Registration successful but no session (email confirmation required)',
+          );
+          // Coba login manual jika session tidak ada
+          await Future.delayed(Duration(milliseconds: 500));
+          return await login(email: email, password: password);
         }
+      } else {
+        print('❌ Registration failed - no user returned');
+        throw Exception('Registration failed - no user created');
       }
-      return null;
+    } on AuthException catch (e) {
+      print('🚨 Auth Exception: ${e.message}');
+      throw Exception('Registration failed: ${e.message}');
     } catch (e) {
+      print('💥 General Exception: $e');
       throw Exception('Registration failed: $e');
     }
   }
@@ -47,10 +61,15 @@ class AuthService {
     required String password,
   }) async {
     try {
+      print('🔐 Attempting login for: $email');
+
       final response = await _supabase.auth.signInWithPassword(
         email: email,
         password: password,
       );
+
+      print('📋 Login response: ${response.user?.id}');
+      print('🔐 Session: ${response.session != null}');
 
       if (response.user != null) {
         return UserModel.fromJson({
@@ -60,7 +79,11 @@ class AuthService {
         });
       }
       return null;
+    } on AuthException catch (e) {
+      print('🚨 Login Auth Exception: ${e.message}');
+      throw Exception('Login failed: ${e.message}');
     } catch (e) {
+      print('💥 Login General Exception: $e');
       throw Exception('Login failed: $e');
     }
   }
