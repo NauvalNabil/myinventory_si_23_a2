@@ -189,7 +189,7 @@ class _IsikardusState extends State<Isikardus> {
                 ),
               ),
             ),
-            const SizedBox(height: 15),
+            const SizedBox(height: 10),
             Expanded(
               child: _isLoading
                   ? const Center(
