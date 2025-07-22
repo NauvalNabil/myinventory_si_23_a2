@@ -21,7 +21,6 @@ class _TambahItemState extends State<TambahItem> {
   final ItemService _itemService = ItemService();
   bool _isLoading = false;
 
-  // PERBAIKAN: State untuk gambar dan tanggal
   File? _gambarFile;
   DateTime? _tanggalBeli;
 
@@ -34,11 +33,12 @@ class _TambahItemState extends State<TambahItem> {
     super.dispose();
   }
 
-  // FUNGSI BARU: Untuk memilih gambar
   Future<void> _pilihGambar() async {
     final picker = ImagePicker();
-    final XFile? pickedFile =
-        await picker.pickImage(source: ImageSource.gallery, imageQuality: 70);
+    final XFile? pickedFile = await picker.pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 70,
+    );
 
     if (pickedFile != null) {
       setState(() {
@@ -99,16 +99,24 @@ class _TambahItemState extends State<TambahItem> {
                     color: Colors.grey[800],
                     borderRadius: BorderRadius.circular(10),
                     border: Border.all(color: Colors.white54),
-                    image: _gambarFile != null
-                        ? DecorationImage(
-                            image: FileImage(_gambarFile!), fit: BoxFit.cover)
-                        : null,
+                    image:
+                        _gambarFile != null
+                            ? DecorationImage(
+                              image: FileImage(_gambarFile!),
+                              fit: BoxFit.cover,
+                            )
+                            : null,
                   ),
-                  child: _gambarFile == null
-                      ? const Center(
-                          child: Icon(Icons.add_a_photo,
-                              color: Colors.white70, size: 50))
-                      : null,
+                  child:
+                      _gambarFile == null
+                          ? const Center(
+                            child: Icon(
+                              Icons.add_a_photo,
+                              color: Colors.white70,
+                              size: 50,
+                            ),
+                          )
+                          : null,
                 ),
               ),
 
@@ -116,8 +124,10 @@ class _TambahItemState extends State<TambahItem> {
               buildTextField(namaController),
 
               buildLabel("JUMLAH"),
-              buildTextField(jumlahController,
-                  keyboardType: TextInputType.number),
+              buildTextField(
+                jumlahController,
+                keyboardType: TextInputType.number,
+              ),
 
               buildLabel("KONDISI"),
               buildTextField(kondisiController),
@@ -128,8 +138,10 @@ class _TambahItemState extends State<TambahItem> {
                 onTap: () => _pilihTanggal(context),
                 child: Container(
                   width: double.infinity,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 16,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(8),
@@ -139,11 +151,13 @@ class _TambahItemState extends State<TambahItem> {
                         ? 'Pilih Tanggal'
                         : DateFormat('d MMMM yyyy').format(_tanggalBeli!),
                     style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 16,
-                        fontWeight: _tanggalBeli == null
-                            ? FontWeight.normal
-                            : FontWeight.bold),
+                      color: Colors.black,
+                      fontSize: 16,
+                      fontWeight:
+                          _tanggalBeli == null
+                              ? FontWeight.normal
+                              : FontWeight.bold,
+                    ),
                   ),
                 ),
               ),
@@ -153,71 +167,83 @@ class _TambahItemState extends State<TambahItem> {
               const SizedBox(height: 24),
               Align(
                 alignment: Alignment.center,
-                child: _isLoading
-                    ? const CircularProgressIndicator(color: Colors.white)
-                    : ElevatedButton(
-                        onPressed: () async {
-                          if (namaController.text.isEmpty ||
-                              jumlahController.text.isEmpty) {
-                            tampilkanPeringatan(
-                                "Nama dan Jumlah item harus diisi!");
-                            return;
-                          }
-                          setState(() => _isLoading = true);
-
-                          try {
-                            String? imageUrl;
-                            if (_gambarFile != null) {
-                              imageUrl =
-                                  await _itemService.uploadItemImage(_gambarFile!);
-                            }
-
-                            final newItem = await _itemService.createItem(
-                              nama: namaController.text,
-                              jumlah: int.tryParse(jumlahController.text) ?? 0,
-                              kondisi: kondisiController.text.isNotEmpty
-                                  ? kondisiController.text
-                                  : null,
-                              tanggalBeli: _tanggalBeli,
-                              deskripsi: deskripsiController.text.isNotEmpty
-                                  ? deskripsiController.text
-                                  : null,
-                              kardusId: widget.kardusId,
-                              gambar: imageUrl,
-                            );
-                            setState(() => _isLoading = false);
-                            if (newItem != null) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content: Text("Item berhasil ditambahkan!"),
-                                    backgroundColor: Colors.green),
+                child:
+                    _isLoading
+                        ? const CircularProgressIndicator(color: Colors.white)
+                        : ElevatedButton(
+                          onPressed: () async {
+                            if (namaController.text.isEmpty ||
+                                jumlahController.text.isEmpty) {
+                              tampilkanPeringatan(
+                                "Nama dan Jumlah item harus diisi!",
                               );
-                              Navigator.pop(context, newItem);
+                              return;
                             }
-                          } catch (e) {
-                            setState(() => _isLoading = false);
-                            tampilkanPeringatan(
-                                "Gagal menambahkan item: $e");
-                          }
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor:
-                              const Color.fromARGB(255, 235, 114, 54),
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 32, vertical: 12),
-                          shape: const StadiumBorder(),
-                          elevation: 2,
-                        ),
-                        child: const Text(
-                          "TAMBAH",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
-                            letterSpacing: 1,
+                            setState(() => _isLoading = true);
+
+                            try {
+                              String? imageUrl;
+                              if (_gambarFile != null) {
+                                imageUrl = await _itemService.uploadItemImage(
+                                  _gambarFile!,
+                                );
+                              }
+
+                              final newItem = await _itemService.createItem(
+                                nama: namaController.text,
+                                jumlah:
+                                    int.tryParse(jumlahController.text) ?? 0,
+                                kondisi:
+                                    kondisiController.text.isNotEmpty
+                                        ? kondisiController.text
+                                        : null,
+                                tanggalBeli: _tanggalBeli,
+                                deskripsi:
+                                    deskripsiController.text.isNotEmpty
+                                        ? deskripsiController.text
+                                        : null,
+                                kardusId: widget.kardusId,
+                                gambar: imageUrl,
+                              );
+                              setState(() => _isLoading = false);
+                              if (newItem != null) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text("Item berhasil ditambahkan!"),
+                                    backgroundColor: Colors.green,
+                                  ),
+                                );
+                                Navigator.pop(context, newItem);
+                              }
+                            } catch (e) {
+                              setState(() => _isLoading = false);
+                              tampilkanPeringatan("Gagal menambahkan item: $e");
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color.fromARGB(
+                              255,
+                              235,
+                              114,
+                              54,
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 32,
+                              vertical: 12,
+                            ),
+                            shape: const StadiumBorder(),
+                            elevation: 2,
+                          ),
+                          child: const Text(
+                            "TAMBAH",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                              letterSpacing: 1,
+                            ),
                           ),
                         ),
-                      ),
               ),
             ],
           ),
@@ -240,8 +266,12 @@ class _TambahItemState extends State<TambahItem> {
     );
   }
 
-  Widget buildTextField(TextEditingController controller,
-      {int maxLines = 1, TextInputType? keyboardType, String? hintText}) {
+  Widget buildTextField(
+    TextEditingController controller, {
+    int maxLines = 1,
+    TextInputType? keyboardType,
+    String? hintText,
+  }) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
