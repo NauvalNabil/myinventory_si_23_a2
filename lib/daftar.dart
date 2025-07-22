@@ -9,6 +9,7 @@ class Daftar extends StatefulWidget {
   @override
   State<Daftar> createState() => _DaftarState();
 }
+
 //knken
 class _DaftarState extends State<Daftar> {
   final TextEditingController usernameController = TextEditingController();
@@ -18,7 +19,7 @@ class _DaftarState extends State<Daftar> {
   final AuthService _authService = AuthService();
   bool _isLoading = false;
   bool _isPasswordVisible = false;
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -117,7 +118,6 @@ class _DaftarState extends State<Daftar> {
                           )
                           : ElevatedButton(
                             onPressed: () async {
-                              // Validasi input
                               if (usernameController.text.isEmpty ||
                                   emailController.text.isEmpty ||
                                   passwordController.text.isEmpty) {
@@ -142,7 +142,6 @@ class _DaftarState extends State<Daftar> {
                                 return;
                               }
 
-                            //dbbd
                               if (!GetUtils.isEmail(
                                 emailController.text.trim(),
                               )) {
@@ -179,7 +178,6 @@ class _DaftarState extends State<Daftar> {
                                     colorText: Colors.white,
                                   );
 
-                                
                                   Get.offAll(
                                     () => HomeScreen(
                                       username: user.username ?? '',
