@@ -55,7 +55,7 @@ class _EditKardusState extends State<EditKardus> {
       style: TextStyle(color: const Color.fromARGB(255, 0, 0, 0)),
       decoration: InputDecoration(
         filled: true,
-        fillColor: const Color.fromARGB(255, 111, 101, 101),
+        fillColor: const Color.fromARGB(255, 255, 255, 255),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
         hintStyle: TextStyle(color: Colors.white54),
       ),
