@@ -244,7 +244,7 @@ class _ProfileState extends State<Profile> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 50),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 30),
                       child: SizedBox(
