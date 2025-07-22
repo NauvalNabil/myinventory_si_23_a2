@@ -34,7 +34,7 @@ class _DaftarState extends State<Daftar> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const SizedBox(height: 100),
+                const SizedBox(height: 90),
                 TextField(
                   controller: usernameController,
                   style: const TextStyle(color: Colors.white),
