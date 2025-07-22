@@ -142,7 +142,7 @@ class _DaftarState extends State<Daftar> {
                                 return;
                               }
 
-                            
+                            //dbbd
                               if (!GetUtils.isEmail(
                                 emailController.text.trim(),
                               )) {
