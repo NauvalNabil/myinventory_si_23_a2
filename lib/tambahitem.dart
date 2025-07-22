@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:myinventory_si_23_a2/models/itemModel.dart';
 import 'package:myinventory_si_23_a2/services/itemService.dart';
 
 class TambahItem extends StatefulWidget {

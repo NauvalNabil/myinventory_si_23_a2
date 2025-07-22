@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:myinventory_si_23_a2/home.dart';
 import 'package:myinventory_si_23_a2/services/kardusService.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 class Buatkardus extends StatefulWidget {
   const Buatkardus({super.key});
