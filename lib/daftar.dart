@@ -180,7 +180,7 @@ class _DaftarState extends State<Daftar> {
                                     colorText: Colors.white,
                                   );
 
-                                  // Navigate ke home
+                                
                                   Get.offAll(
                                     () => HomeScreen(
                                       username: user.username ?? '',
