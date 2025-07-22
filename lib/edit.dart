@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:myinventory_si_23_a2/models/kardusModel.dart';
-import 'package:myinventory_si_23_a2/services/kardusService.dart'; // Import service untuk update
+import 'package:myinventory_si_23_a2/services/kardusService.dart';
 
 class EditKardus extends StatefulWidget {
   final KardusModel kardus;
@@ -45,7 +45,10 @@ class _EditKardusState extends State<EditKardus> {
     );
   }
 
-  Widget _buildTextField({required TextEditingController controller, int? maxLines}) {
+  Widget _buildTextField({
+    required TextEditingController controller,
+    int? maxLines,
+  }) {
     return TextField(
       controller: controller,
       maxLines: maxLines,
@@ -84,34 +87,40 @@ class _EditKardusState extends State<EditKardus> {
             _isLoading
                 ? const CircularProgressIndicator(color: Colors.white)
                 : ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(255, 235, 114, 54),
-                      padding: EdgeInsets.symmetric(horizontal: 32, vertical: 12),
-                    ),
-                    onPressed: () async {
-                      setState(() => _isLoading = true);
-                      // Gunakan copyWith untuk mempertahankan ID dan field lain yang tidak diubah
-                      final updatedKardus = widget.kardus.copyWith(
-                        kategori: kategoriController.text,
-                        deskripsi: deskripsiController.text,
-                        lokasi: lokasiController.text,
-                      );
-                      try {
-                        await _kardusService.updateKardus(updatedKardus);
-                        setState(() => _isLoading = false);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text("Kardus berhasil disimpan!"), backgroundColor: Colors.green),
-                        );
-                        Navigator.pop(context, updatedKardus);
-                      } catch (e) {
-                        setState(() => _isLoading = false);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text("Gagal menyimpan: $e"), backgroundColor: Colors.red),
-                        );
-                      }
-                    },
-                    child: Text("SIMPAN", style: TextStyle(color: Colors.white)),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromARGB(255, 235, 114, 54),
+                    padding: EdgeInsets.symmetric(horizontal: 32, vertical: 12),
                   ),
+                  onPressed: () async {
+                    setState(() => _isLoading = true);
+
+                    final updatedKardus = widget.kardus.copyWith(
+                      kategori: kategoriController.text,
+                      deskripsi: deskripsiController.text,
+                      lokasi: lokasiController.text,
+                    );
+                    try {
+                      await _kardusService.updateKardus(updatedKardus);
+                      setState(() => _isLoading = false);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text("Kardus berhasil disimpan!"),
+                          backgroundColor: Colors.green,
+                        ),
+                      );
+                      Navigator.pop(context, updatedKardus);
+                    } catch (e) {
+                      setState(() => _isLoading = false);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text("Gagal menyimpan: $e"),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                    }
+                  },
+                  child: Text("SIMPAN", style: TextStyle(color: Colors.white)),
+                ),
           ],
         ),
       ),

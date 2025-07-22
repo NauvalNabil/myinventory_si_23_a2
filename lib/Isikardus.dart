@@ -118,9 +118,7 @@ class _IsikardusState extends State<Isikardus> {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            // =================================================================
-            // PERBAIKAN: Menambahkan kembali kartu informasi kardus yang hilang
-            // =================================================================
+            // Menampilkan informasi kardus
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
