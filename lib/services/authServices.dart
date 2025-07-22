@@ -16,16 +16,20 @@ class AuthService {
       print('📧 Email: $email');
       print('👤 Username: $username');
 
-      final response = await _supabase.auth.signUp(
-        email: email,
-        password: password,
-        data: username != null ? {'username': username} : null,
-      ).timeout(
-        const Duration(seconds: 15),
-        onTimeout: () {
-          throw Exception('Network timeout - registration failed. Check your internet connection.');
-        },
-      );
+      final response = await _supabase.auth
+          .signUp(
+            email: email,
+            password: password,
+            data: username != null ? {'username': username} : null,
+          )
+          .timeout(
+            const Duration(seconds: 15),
+            onTimeout: () {
+              throw Exception(
+                'Network timeout - registration failed. Check your internet connection.',
+              );
+            },
+          );
 
       print('📋 Registration response: ${response.user?.id}');
       print('🔐 Session available: ${response.session != null}');
@@ -53,14 +57,21 @@ class AuthService {
       }
     } on AuthException catch (e) {
       print('🚨 Auth Exception: ${e.message}');
-      if (e.message.contains('Failed host lookup') || e.message.contains('SocketException')) {
-        throw Exception('Network connection failed. Please check your internet connection and try again.');
+      if (e.message.contains('Failed host lookup') ||
+          e.message.contains('SocketException')) {
+        throw Exception(
+          'Network connection failed. Please check your internet connection and try again.',
+        );
       }
       throw Exception('Registration failed: ${e.message}');
     } catch (e) {
       print('💥 General Exception: $e');
-      if (e.toString().contains('timeout') || e.toString().contains('SocketException') || e.toString().contains('Failed host lookup')) {
-        throw Exception('Network connection timeout. Please check your internet connection and try again.');
+      if (e.toString().contains('timeout') ||
+          e.toString().contains('SocketException') ||
+          e.toString().contains('Failed host lookup')) {
+        throw Exception(
+          'Network connection timeout. Please check your internet connection and try again.',
+        );
       }
       throw Exception('Registration failed: $e');
     }
