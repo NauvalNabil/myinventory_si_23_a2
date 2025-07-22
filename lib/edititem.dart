@@ -25,9 +25,13 @@ class _EditItemState extends State<EditItem> {
   void initState() {
     super.initState();
     namaController = TextEditingController(text: widget.item.nama);
-    jumlahController = TextEditingController(text: widget.item.jumlah.toString());
+    jumlahController = TextEditingController(
+      text: widget.item.jumlah.toString(),
+    );
     kondisiController = TextEditingController(text: widget.item.kondisi);
-    tanggalController = TextEditingController(text: widget.item.tanggalBeli?.toIso8601String().split('T')[0] ?? '');
+    tanggalController = TextEditingController(
+      text: widget.item.tanggalBeli?.toIso8601String().split('T')[0] ?? '',
+    );
     deskripsiController = TextEditingController(text: widget.item.deskripsi);
   }
 
@@ -70,7 +74,10 @@ class _EditItemState extends State<EditItem> {
               buildLabel("NAMA ITEM"),
               buildTextField(namaController),
               buildLabel("JUMLAH"),
-              buildTextField(jumlahController, keyboardType: TextInputType.number),
+              buildTextField(
+                jumlahController,
+                keyboardType: TextInputType.number,
+              ),
               buildLabel("KONDISI"),
               buildTextField(kondisiController),
               buildLabel("TANGGAL BELI (YYYY-MM-DD)"),
@@ -80,54 +87,68 @@ class _EditItemState extends State<EditItem> {
               const SizedBox(height: 24),
               Align(
                 alignment: Alignment.center,
-                child: _isLoading
-                    ? const CircularProgressIndicator(color: Colors.white)
-                    : ElevatedButton(
-                        onPressed: () async {
-                          if (namaController.text.isEmpty ||
-                              jumlahController.text.isEmpty) {
-                            tampilkanPeringatan("Semua kolom harus diisi!");
-                            return;
-                          }
+                child:
+                    _isLoading
+                        ? const CircularProgressIndicator(color: Colors.white)
+                        : ElevatedButton(
+                          onPressed: () async {
+                            if (namaController.text.isEmpty ||
+                                jumlahController.text.isEmpty) {
+                              tampilkanPeringatan("Semua kolom harus diisi!");
+                              return;
+                            }
 
-                          setState(() => _isLoading = true);
+                            setState(() => _isLoading = true);
 
-                          final updatedItem = widget.item.copyWith(
-                            nama: namaController.text,
-                            jumlah: int.tryParse(jumlahController.text) ?? 0,
-                            kondisi: kondisiController.text,
-                            tanggalBeli: DateTime.tryParse(tanggalController.text),
-                            deskripsi: deskripsiController.text,
-                          );
-
-                          try {
-                            await _itemService.updateItem(updatedItem);
-                            setState(() => _isLoading = false);
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text("Item berhasil disimpan!"), backgroundColor: Colors.green),
+                            final updatedItem = widget.item.copyWith(
+                              nama: namaController.text,
+                              jumlah: int.tryParse(jumlahController.text) ?? 0,
+                              kondisi: kondisiController.text,
+                              tanggalBeli: DateTime.tryParse(
+                                tanggalController.text,
+                              ),
+                              deskripsi: deskripsiController.text,
                             );
-                            Navigator.pop(context, updatedItem);
-                          } catch (e) {
-                            setState(() => _isLoading = false);
-                            tampilkanPeringatan("Gagal menyimpan item: $e");
-                          }
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color.fromARGB(255, 235, 114, 54),
-                          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
-                          shape: const StadiumBorder(),
-                          elevation: 2,
-                        ),
-                        child: const Text(
-                          "SIMPAN",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
-                            letterSpacing: 1,
+
+                            try {
+                              await _itemService.updateItem(updatedItem);
+                              setState(() => _isLoading = false);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text("Item berhasil disimpan!"),
+                                  backgroundColor: Colors.green,
+                                ),
+                              );
+                              Navigator.pop(context, updatedItem);
+                            } catch (e) {
+                              setState(() => _isLoading = false);
+                              tampilkanPeringatan("Gagal menyimpan item: $e");
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color.fromARGB(
+                              255,
+                              235,
+                              114,
+                              54,
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 32,
+                              vertical: 12,
+                            ),
+                            shape: const StadiumBorder(),
+                            elevation: 2,
+                          ),
+                          child: const Text(
+                            "SIMPAN",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                              letterSpacing: 1,
+                            ),
                           ),
                         ),
-                      ),
               ),
             ],
           ),
@@ -150,13 +171,18 @@ class _EditItemState extends State<EditItem> {
     );
   }
 
-  Widget buildTextField(TextEditingController controller,
-      {int maxLines = 1, TextInputType? keyboardType, String? hintText}) {
+  Widget buildTextField(
+    TextEditingController controller, {
+    int maxLines = 1,
+    TextInputType? keyboardType,
+    String? hintText,
+  }) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(8),
       ),
+      //feifjisfrf
       padding: const EdgeInsets.symmetric(horizontal: 12),
       margin: const EdgeInsets.only(bottom: 8),
       child: TextField(
