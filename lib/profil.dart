@@ -236,7 +236,7 @@ class _ProfileState extends State<Profile> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(Icons.email, color: Colors.white),
+                        const Icon(Icons.email, color: Color.fromARGB(255, 150, 141, 141)),
                         const SizedBox(width: 10),
                         Text(
                           displayEmail ?? 'Tidak tersedia',
