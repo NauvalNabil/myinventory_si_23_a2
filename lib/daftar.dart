@@ -10,7 +10,7 @@ class Daftar extends StatefulWidget {
   State<Daftar> createState() => _DaftarState();
 }
 
-
+//hhebjed
 class _DaftarState extends State<Daftar> {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
@@ -19,7 +19,7 @@ class _DaftarState extends State<Daftar> {
   final AuthService _authService = AuthService();
   bool _isLoading = false;
   bool _isPasswordVisible = false;
-//daftar
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
