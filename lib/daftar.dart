@@ -143,7 +143,7 @@ class _DaftarState extends State<Daftar> {
                                 return;
                               }
 
-                              // Validasi email format
+                            
                               if (!GetUtils.isEmail(
                                 emailController.text.trim(),
                               )) {
