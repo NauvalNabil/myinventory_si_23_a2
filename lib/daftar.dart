@@ -10,7 +10,6 @@ class Daftar extends StatefulWidget {
   State<Daftar> createState() => _DaftarState();
 }
 
-//hhebjed
 class _DaftarState extends State<Daftar> {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
