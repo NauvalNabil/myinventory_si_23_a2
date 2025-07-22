@@ -47,7 +47,6 @@ class _TambahItemState extends State<TambahItem> {
     }
   }
 
-  // FUNGSI BARU: Untuk menampilkan date picker
   Future<void> _pilihTanggal(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
@@ -88,7 +87,6 @@ class _TambahItemState extends State<TambahItem> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // PERBAIKAN: Widget untuk memilih gambar
               buildLabel("GAMBAR ITEM (OPSIONAL)"),
               GestureDetector(
                 onTap: _pilihGambar,
@@ -132,7 +130,6 @@ class _TambahItemState extends State<TambahItem> {
               buildLabel("KONDISI"),
               buildTextField(kondisiController),
 
-              // PERBAIKAN: Widget untuk memilih tanggal
               buildLabel("TANGGAL BELI"),
               GestureDetector(
                 onTap: () => _pilihTanggal(context),
