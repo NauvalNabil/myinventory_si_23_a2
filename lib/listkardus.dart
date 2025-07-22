@@ -27,7 +27,10 @@ class _ListkardusState extends State<Listkardus> {
 
   Future<void> pilihGambar(int index) async {
     final picker = ImagePicker();
-    final XFile? gambar = await picker.pickImage(source: ImageSource.gallery, imageQuality: 70);
+    final XFile? gambar = await picker.pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 70,
+    );
 
     if (gambar != null) {
       setState(() => _isUploading = true);
@@ -35,21 +38,23 @@ class _ListkardusState extends State<Listkardus> {
         final file = File(gambar.path);
         final imageUrl = await _kardusService.uploadKardusImage(file);
         final updatedKardus = daftarKardus[index].copyWith(gambar: imageUrl);
-        await _kardusService.updateKardus(updatedKardus); 
-        if(mounted) {
+        await _kardusService.updateKardus(updatedKardus);
+        if (mounted) {
           setState(() {
             daftarKardus[index] = updatedKardus;
           });
         }
       } catch (e) {
-        if(mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text("Gagal mengunggah gambar: $e"),
-            backgroundColor: Colors.red,
-          ));
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text("Gagal mengunggah gambar: $e"),
+              backgroundColor: Colors.red,
+            ),
+          );
         }
       } finally {
-        if(mounted) {
+        if (mounted) {
           setState(() => _isUploading = false);
         }
       }
@@ -63,25 +68,36 @@ class _ListkardusState extends State<Listkardus> {
     final kardus = daftarKardus[index];
     final konfirmasi = await showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: const Color.fromRGBO(0, 6, 47, 1.0),
-        title: const Text("Konfirmasi Hapus",
-            style: TextStyle(color: Colors.white)),
-        content: const Text("Yakin ingin menghapus kardus ini? Semua item di dalamnya juga akan terhapus.",
-            style: TextStyle(color: Colors.white70)),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text("Tidak", style: TextStyle(color: Colors.white70)),
+      builder:
+          (context) => AlertDialog(
+            backgroundColor: const Color.fromRGBO(0, 6, 47, 1.0),
+            title: const Text(
+              "Konfirmasi Hapus",
+              style: TextStyle(color: Colors.white),
+            ),
+            content: const Text(
+              "Yakin ingin menghapus kardus ini? Semua item di dalamnya juga akan terhapus.",
+              style: TextStyle(color: Colors.white70),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: const Text(
+                  "Tidak",
+                  style: TextStyle(color: Colors.white70),
+                ),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(context, true),
+                child: const Text(
+                  "Ya",
+                  style: TextStyle(color: Color(0xFFD65A38)),
+                ),
+              ),
+            ],
           ),
-          TextButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: const Text("Ya", style: TextStyle(color: Color(0xFFD65A38))),
-          ),
-        ],
-      ),
     );
-    
+
     if (konfirmasi == true) {
       try {
         await _kardusService.deleteKardus(kardus.id);
@@ -108,7 +124,7 @@ class _ListkardusState extends State<Listkardus> {
       }
     }
   }
-  
+
   Widget buildCircleButton(IconData icon, VoidCallback onPressed) {
     return Container(
       width: 36,
@@ -117,7 +133,9 @@ class _ListkardusState extends State<Listkardus> {
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(0.9),
         shape: BoxShape.circle,
-        boxShadow: const [BoxShadow(color: Colors.black26, blurRadius: 4, offset: Offset(0, 2))],
+        boxShadow: const [
+          BoxShadow(color: Colors.black26, blurRadius: 4, offset: Offset(0, 2)),
+        ],
       ),
       child: IconButton(
         padding: EdgeInsets.zero,
@@ -169,22 +187,28 @@ class _ListkardusState extends State<Listkardus> {
                               decoration: BoxDecoration(
                                 color: Colors.grey[300],
                                 borderRadius: BorderRadius.circular(10),
-                                image: kardus.gambar != null && kardus.gambar!.isNotEmpty
-                                    ? DecorationImage(
-                                        image: CachedNetworkImageProvider(kardus.gambar!),
-                                        fit: BoxFit.cover,
-                                      )
-                                    : null,
+                                image:
+                                    kardus.gambar != null &&
+                                            kardus.gambar!.isNotEmpty
+                                        ? DecorationImage(
+                                          image: CachedNetworkImageProvider(
+                                            kardus.gambar!,
+                                          ),
+                                          fit: BoxFit.cover,
+                                        )
+                                        : null,
                               ),
-                              child: kardus.gambar == null || kardus.gambar!.isEmpty
-                                  ? Center(
-                                      child: Icon(
-                                        Icons.photo_camera_back,
-                                        size: 60,
-                                        color: Colors.grey[700],
-                                      ),
-                                    )
-                                  : null,
+                              child:
+                                  kardus.gambar == null ||
+                                          kardus.gambar!.isEmpty
+                                      ? Center(
+                                        child: Icon(
+                                          Icons.photo_camera_back,
+                                          size: 60,
+                                          color: Colors.grey[700],
+                                        ),
+                                      )
+                                      : null,
                             ),
                           ),
                           Positioned(
@@ -193,19 +217,25 @@ class _ListkardusState extends State<Listkardus> {
                             child: Row(
                               children: [
                                 buildCircleButton(Icons.edit, () async {
-                                  final hasilEdit = await Navigator.push<KardusModel>(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => EditKardus(kardus: kardus),
-                                    ),
-                                  );
+                                  final hasilEdit =
+                                      await Navigator.push<KardusModel>(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder:
+                                              (context) =>
+                                                  EditKardus(kardus: kardus),
+                                        ),
+                                      );
                                   if (hasilEdit != null) {
                                     setState(() {
                                       daftarKardus[index] = hasilEdit;
                                     });
                                   }
                                 }),
-                                buildCircleButton(Icons.delete, () => hapusKardus(index)),
+                                buildCircleButton(
+                                  Icons.delete,
+                                  () => hapusKardus(index),
+                                ),
                               ],
                             ),
                           ),
@@ -214,17 +244,26 @@ class _ListkardusState extends State<Listkardus> {
                       const SizedBox(height: 12),
                       Text(
                         "KATEGORI : ${kardus.kategori.toUpperCase()}",
-                        style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
                       ),
                       const SizedBox(height: 4),
                       Text(
                         "DESKRIPSI : ${kardus.deskripsi ?? ''}",
-                        style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       const SizedBox(height: 4),
                       Text(
                         "LOKASI : ${(kardus.lokasi ?? '').toUpperCase()}",
-                        style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
                       ),
                     ],
                   ),
@@ -241,7 +280,10 @@ class _ListkardusState extends State<Listkardus> {
                   children: [
                     CircularProgressIndicator(color: Colors.white),
                     SizedBox(height: 10),
-                    Text("Mengunggah...", style: TextStyle(color: Colors.white)),
+                    Text(
+                      "Mengunggah...",
+                      style: TextStyle(color: Colors.white),
+                    ),
                   ],
                 ),
               ),

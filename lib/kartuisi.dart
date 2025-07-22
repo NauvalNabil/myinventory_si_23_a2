@@ -7,7 +7,7 @@ class Item {
   String tanggalBeli;
   String deskripsi;
   XFile? gambar;
-
+// Optional constructor parameter for image
   Item({
     required this.nama,
     required this.jumlah,
