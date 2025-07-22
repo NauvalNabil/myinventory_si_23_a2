@@ -10,6 +10,7 @@ class Daftar extends StatefulWidget {
   State<Daftar> createState() => _DaftarState();
 }
 
+// daftar
 class _DaftarState extends State<Daftar> {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
@@ -26,7 +27,9 @@ class _DaftarState extends State<Daftar> {
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 30),
         child: ConstrainedBox(
-          constraints: BoxConstraints(minHeight: MediaQuery.of(context).size.height),
+          constraints: BoxConstraints(
+            minHeight: MediaQuery.of(context).size.height,
+          ),
           child: IntrinsicHeight(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -42,7 +45,10 @@ class _DaftarState extends State<Daftar> {
                       borderSide: BorderSide(color: Color(0xFFDB6A3E)),
                     ),
                     focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Color(0xFFFF7B54), width: 2),
+                      borderSide: BorderSide(
+                        color: Color(0xFFFF7B54),
+                        width: 2,
+                      ),
                     ),
                   ),
                 ),
@@ -58,7 +64,10 @@ class _DaftarState extends State<Daftar> {
                       borderSide: BorderSide(color: Color(0xFFDB6A3E)),
                     ),
                     focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Color(0xFFFF7B54), width: 2),
+                      borderSide: BorderSide(
+                        color: Color(0xFFFF7B54),
+                        width: 2,
+                      ),
                     ),
                   ),
                 ),
@@ -74,11 +83,16 @@ class _DaftarState extends State<Daftar> {
                       borderSide: BorderSide(color: Color(0xFFDB6A3E)),
                     ),
                     focusedBorder: const UnderlineInputBorder(
-                      borderSide: BorderSide(color: Color(0xFFFF7B54), width: 2),
+                      borderSide: BorderSide(
+                        color: Color(0xFFFF7B54),
+                        width: 2,
+                      ),
                     ),
                     suffixIcon: IconButton(
                       icon: Icon(
-                        _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                        _isPasswordVisible
+                            ? Icons.visibility
+                            : Icons.visibility_off,
                         color: const Color(0xFFDB6A3E),
                         size: 24,
                       ),
@@ -95,65 +109,156 @@ class _DaftarState extends State<Daftar> {
                 SizedBox(
                   width: double.infinity,
                   height: 48,
-                  child: _isLoading
-                      ? const Center(child: CircularProgressIndicator(color: Color(0xFFDB6A3E)))
-                      : ElevatedButton(
-                          onPressed: () async {
-                            if (usernameController.text.isEmpty ||
-                                emailController.text.isEmpty ||
-                                passwordController.text.isEmpty) {
-                              Get.snackbar('Error', 'Semua field harus diisi', snackPosition: SnackPosition.BOTTOM);
-                              return;
-                            }
-                            if (passwordController.text.length < 6) {
-                              Get.snackbar('Error', 'Password minimal 6 karakter', snackPosition: SnackPosition.BOTTOM);
-                              return;
-                            }
-                            setState(() => _isLoading = true);
-                            try {
-                              final user = await _authService.register(
-                                email: emailController.text.trim(),
-                                password: passwordController.text,
-                                username: usernameController.text.trim(),
-                              );
-                              setState(() => _isLoading = false);
-                              if (user != null) {
-                                Get.offAll(() => HomeScreen(
+                  child:
+                      _isLoading
+                          ? const Center(
+                            child: CircularProgressIndicator(
+                              color: Color(0xFFDB6A3E),
+                            ),
+                          )
+                          : ElevatedButton(
+                            onPressed: () async {
+                              // Validasi input
+                              if (usernameController.text.isEmpty ||
+                                  emailController.text.isEmpty ||
+                                  passwordController.text.isEmpty) {
+                                Get.snackbar(
+                                  'Error',
+                                  'Semua field harus diisi',
+                                  snackPosition: SnackPosition.BOTTOM,
+                                  backgroundColor: Colors.red,
+                                  colorText: Colors.white,
+                                );
+                                return;
+                              }
+
+                              if (passwordController.text.length < 6) {
+                                Get.snackbar(
+                                  'Error',
+                                  'Password minimal 6 karakter',
+                                  snackPosition: SnackPosition.BOTTOM,
+                                  backgroundColor: Colors.red,
+                                  colorText: Colors.white,
+                                );
+                                return;
+                              }
+
+                              // Validasi email format
+                              if (!GetUtils.isEmail(
+                                emailController.text.trim(),
+                              )) {
+                                Get.snackbar(
+                                  'Error',
+                                  'Format email tidak valid',
+                                  snackPosition: SnackPosition.BOTTOM,
+                                  backgroundColor: Colors.red,
+                                  colorText: Colors.white,
+                                );
+                                return;
+                              }
+
+                              setState(() => _isLoading = true);
+
+                              try {
+                                print('🚀 Starting registration process...');
+
+                                final user = await _authService.register(
+                                  email: emailController.text.trim(),
+                                  password: passwordController.text,
+                                  username: usernameController.text.trim(),
+                                );
+
+                                setState(() => _isLoading = false);
+
+                                if (user != null) {
+                                  print('✅ Registration successful!');
+                                  Get.snackbar(
+                                    'Sukses',
+                                    'Registrasi berhasil! Selamat datang ${user.username}',
+                                    snackPosition: SnackPosition.BOTTOM,
+                                    backgroundColor: Colors.green,
+                                    colorText: Colors.white,
+                                  );
+
+                                  // Navigate ke home
+                                  Get.offAll(
+                                    () => HomeScreen(
                                       username: user.username ?? '',
                                       email: user.email,
-                                    ));
-                              } else {
-                                Get.snackbar('Error', 'Registrasi gagal.', snackPosition: SnackPosition.BOTTOM);
+                                    ),
+                                  );
+                                } else {
+                                  print('❌ Registration returned null user');
+                                  Get.snackbar(
+                                    'Error',
+                                    'Registrasi gagal. User tidak dibuat.',
+                                    snackPosition: SnackPosition.BOTTOM,
+                                    backgroundColor: Colors.red,
+                                    colorText: Colors.white,
+                                  );
+                                }
+                              } catch (e) {
+                                setState(() => _isLoading = false);
+                                print('💥 Registration error: $e');
+
+                                String errorMessage = 'Registrasi gagal';
+                                if (e.toString().contains(
+                                  'already registered',
+                                )) {
+                                  errorMessage = 'Email sudah terdaftar';
+                                } else if (e.toString().contains(
+                                  'weak password',
+                                )) {
+                                  errorMessage = 'Password terlalu lemah';
+                                } else if (e.toString().contains(
+                                  'invalid email',
+                                )) {
+                                  errorMessage = 'Format email tidak valid';
+                                }
+
+                                Get.snackbar(
+                                  'Error',
+                                  '$errorMessage: ${e.toString()}',
+                                  snackPosition: SnackPosition.BOTTOM,
+                                  backgroundColor: Colors.red,
+                                  colorText: Colors.white,
+                                  duration: Duration(seconds: 5),
+                                );
                               }
-                            } catch (e) {
-                              setState(() => _isLoading = false);
-                              Get.snackbar('Error', 'Registrasi gagal: ${e.toString()}', snackPosition: SnackPosition.BOTTOM);
-                            }
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFFDB6A3E),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(6),
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFFDB6A3E),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(6),
+                              ),
+                            ),
+                            child: const Text(
+                              'DAFTAR',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                                letterSpacing: 1.2,
+                              ),
                             ),
                           ),
-                          child: const Text(
-                            'DAFTAR',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                              letterSpacing: 1.2,
-                            ),
-                          ),
-                        ),
                 ),
                 const SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text('Sudah punya akun? ', style: TextStyle(color: Colors.white70)),
+                    const Text(
+                      'Sudah punya akun? ',
+                      style: TextStyle(color: Colors.white70),
+                    ),
                     TextButton(
                       onPressed: () => Get.back(),
-                      child: const Text('Login sekarang', style: TextStyle(color: Color(0xFFDB6A3E), fontWeight: FontWeight.bold)),
+                      child: const Text(
+                        'Login sekarang',
+                        style: TextStyle(
+                          color: Color(0xFFDB6A3E),
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                   ],
                 ),
