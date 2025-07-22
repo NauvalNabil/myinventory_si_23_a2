@@ -18,7 +18,7 @@ class _DaftarState extends State<Daftar> {
   final AuthService _authService = AuthService();
   bool _isLoading = false;
   bool _isPasswordVisible = false;
-
+//daftar
   @override
   Widget build(BuildContext context) {
     return Scaffold(
