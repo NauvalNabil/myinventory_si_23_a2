@@ -9,19 +9,20 @@ class MyHttpOverrides extends HttpOverrides {
   @override
   HttpClient createHttpClient(SecurityContext? context) {
     return super.createHttpClient(context)
-      ..badCertificateCallback = (X509Certificate cert, String host, int port) => true;
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
   }
 }
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   // Fix for release builds - allow bad certificates
   HttpOverrides.global = MyHttpOverrides();
 
   try {
     print('🔄 Initializing Supabase...');
-    
+
     // Tambah timeout untuk network call
     await Supabase.initialize(
       url: 'https://fuvjhhztvohsyvwzdvis.supabase.co',
@@ -37,7 +38,7 @@ Future<void> main() async {
         throw Exception('Network timeout - check your connection');
       },
     );
-    
+
     print('✅ Supabase initialized successfully');
   } catch (e) {
     print('❌ Supabase initialization error: $e');
